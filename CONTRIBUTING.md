@@ -25,7 +25,7 @@ Thank you for your interest in contributing to `zbxctl`! We welcome contribution
 2. **Verify Building from Source:**
  ```bash
  go build -o zbxctl main.go
- ./zbxctl --version
+ ./zbxctl version
  ```
 
 3. **Run Unit & Integration Tests:**

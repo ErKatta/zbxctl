@@ -59,6 +59,7 @@ func TestCLICommands(t *testing.T) {
 	// 1. Test zbxctl commands --brief
 	t.Run("commands --brief", func(t *testing.T) {
 		cmd := RootCmd
+		ResetCommandFlags(cmd)
 		cmd.SetArgs([]string{"--config", cfgPath, "commands", "--brief"})
 
 		buf := new(bytes.Buffer)
@@ -66,6 +67,57 @@ func TestCLICommands(t *testing.T) {
 
 		if err := cmd.Execute(); err != nil {
 			t.Fatalf("commands --brief failed: %v", err)
+		}
+	})
+
+	// 1b. Test zbxctl version
+	t.Run("version", func(t *testing.T) {
+		cmd := RootCmd
+		ResetCommandFlags(cmd)
+		buf := new(bytes.Buffer)
+		cmd.SetOut(buf)
+		cmd.SetArgs([]string{"--config", cfgPath, "version"})
+
+		if err := cmd.Execute(); err != nil {
+			t.Fatalf("version failed: %v", err)
+		}
+		out := buf.String()
+		if !strings.Contains(out, "zbxctl version") {
+			t.Errorf("expected 'zbxctl version' in output, got: %s", out)
+		}
+	})
+
+	// 1c. Test zbxctl version --short
+	t.Run("version --short", func(t *testing.T) {
+		cmd := RootCmd
+		ResetCommandFlags(cmd)
+		buf := new(bytes.Buffer)
+		cmd.SetOut(buf)
+		cmd.SetArgs([]string{"--config", cfgPath, "version", "--short"})
+
+		if err := cmd.Execute(); err != nil {
+			t.Fatalf("version --short failed: %v", err)
+		}
+		out := strings.TrimSpace(buf.String())
+		if out == "" {
+			t.Errorf("expected non-empty short version string, got empty")
+		}
+	})
+
+	// 1d. Test zbxctl version -o json
+	t.Run("version -o json", func(t *testing.T) {
+		cmd := RootCmd
+		ResetCommandFlags(cmd)
+		buf := new(bytes.Buffer)
+		cmd.SetOut(buf)
+		cmd.SetArgs([]string{"--config", cfgPath, "version", "-o", "json"})
+
+		if err := cmd.Execute(); err != nil {
+			t.Fatalf("version -o json failed: %v", err)
+		}
+		out := buf.String()
+		if !strings.Contains(out, `"version":`) || !strings.Contains(out, `"go_version":`) {
+			t.Errorf("expected JSON version structure, got: %s", out)
 		}
 	})
 
