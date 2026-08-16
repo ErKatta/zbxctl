@@ -109,10 +109,13 @@ When starting a session or grounding context, run:
 # 1. Discover all verbs, resources, flags, and raw capabilities (low-token tree format)
 zbxctl commands --brief
 
-# 2. Probe target Zabbix instance for sizing & stats (version, total hosts, active problems, items, triggers)
+# 2. Check zbxctl CLI client version & build metadata
+zbxctl version
+
+# 3. Probe target Zabbix instance for sizing & stats (version, total hosts, active problems, items, triggers)
 zbxctl cluster-info
 
-# 3. Diagnose connectivity, credentials, and context safety
+# 4. Diagnose connectivity, credentials, and context safety
 zbxctl doctor
 ```
 

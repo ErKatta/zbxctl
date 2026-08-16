@@ -94,6 +94,12 @@ const commandsData = [
  example: "zbxctl doctor"
  },
   {
+    name: "zbxctl version",
+    category: "agent",
+    desc: "Print the zbxctl CLI version, git commit, build date, and platform architecture.",
+    example: "zbxctl version"
+  },
+  {
     name: "zbxctl cluster-info",
     category: "agent",
     desc: "Display Zabbix instance connection, version, and sizing statistics (hosts, problems, items, triggers).",
