@@ -93,53 +93,53 @@ const commandsData = [
  desc: "Diagnose API connectivity, token validity, and context safety level.",
  example: "zbxctl doctor"
  },
- {
- name: "zbxctl inventory",
- category: "agent",
- desc: "Probe target Zabbix instance grounding statistics (hosts, problems, items).",
- example: "zbxctl inventory"
- },
- {
- name: "zbxctl commands --brief",
- category: "agent",
- desc: "Export compact text tree of all verbs, resources, flags for LLMs.",
- example: "zbxctl commands --brief"
- },
- {
- name: "zbxctl raw <zabbix.method>",
- category: "tier2",
- desc: "Invoke ANY Zabbix 7 JSON-RPC API endpoint with safety middleware filtering.",
- example: "zbxctl raw proxygroup.get --params='{\"output\":\"extend\"}'"
- },
- {
- name: "zbxctl config get-contexts",
- category: "config",
- desc: "List all configured contexts and highlight current active context.",
- example: "zbxctl config get-contexts"
- },
- {
- name: "zbxctl config use-context",
- category: "config",
- desc: "Switch the active context in ~/.zbxctl/config.yaml.",
- example: "zbxctl config use-context prod-us"
- }
+  {
+    name: "zbxctl cluster-info",
+    category: "agent",
+    desc: "Display Zabbix instance connection, version, and sizing statistics (hosts, problems, items, triggers).",
+    example: "zbxctl cluster-info"
+  },
+  {
+    name: "zbxctl commands --brief",
+    category: "agent",
+    desc: "Export compact text tree of all verbs, resources, flags for LLMs.",
+    example: "zbxctl commands --brief"
+  },
+  {
+    name: "zbxctl raw <zabbix.method>",
+    category: "tier2",
+    desc: "Invoke ANY Zabbix 7 JSON-RPC API endpoint with safety middleware filtering.",
+    example: "zbxctl raw proxygroup.get --params='{\"output\":\"extend\"}'"
+  },
+  {
+    name: "zbxctl config get-contexts",
+    category: "config",
+    desc: "List all configured contexts and highlight current active context.",
+    example: "zbxctl config get-contexts"
+  },
+  {
+    name: "zbxctl config use-context",
+    category: "config",
+    desc: "Switch the active context in ~/.zbxctl/config.yaml.",
+    example: "zbxctl config use-context prod-us"
+  }
 ];
 
 const safetyMatrixData = {
- readonly: {
- title: "readonly",
- subtitle: "Default & Safest Mode for Autonomous LLM Agents",
- allowed: ["get", "describe", "query", "doctor", "inventory", "commands", "*.get"],
- blocked: ["*.create", "*.update", "*.delete", "history.push", "exec"],
- sampleError: `{
- "error": {
- "code": "SAFETY_LEVEL_VIOLATION",
- "method": "host.delete",
- "message": "Operation blocked by safety-level 'readonly' on context 'prod'.",
- "resolution": "Switch context or update safety-level in ~/.zbxctl/config.yaml."
- }
+  readonly: {
+    title: "readonly",
+    subtitle: "Default & Safest Mode for Autonomous LLM Agents",
+    allowed: ["get", "describe", "query", "doctor", "cluster-info", "commands", "*.get"],
+    blocked: ["*.create", "*.update", "*.delete", "history.push", "exec"],
+    sampleError: `{
+  "error": {
+    "code": "SAFETY_LEVEL_VIOLATION",
+    "method": "host.delete",
+    "message": "Operation blocked by safety-level 'readonly' on context 'prod'.",
+    "resolution": "Switch context or update safety-level in ~/.zbxctl/config.yaml."
+  }
 }`
- },
+  },
  "readwrite-mine": {
  title: "readwrite-mine",
  subtitle: "Scoped Mutations for Managed Infrastructure",

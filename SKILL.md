@@ -7,7 +7,7 @@ description: Zabbix 7 CLI and Automation Engine for AI Agents and Systems Engine
 
 `zbxctl` is a high-performance command-line tool for interacting with Zabbix 7.0+ LTS monitoring systems.
 It provides a **Tiered Command Architecture**:
-1. **Tier 1 Ergonomic Commands:** High-frequency verb-noun operations (`get`, `describe`, `apply`, `delete`, `query`, `exec`, `wait`, `diff`, `doctor`, `inventory`).
+1. **Tier 1 Ergonomic Commands:** High-frequency verb-noun operations (`get`, `describe`, `apply`, `delete`, `query`, `exec`, `wait`, `diff`, `doctor`, `cluster-info`).
 2. **Tier 2 Universal Raw Engine:** `zbxctl raw <zabbix.method> [--params='<json>']` providing 100% Zabbix 7 API coverage with full client-side safety middleware enforcement.
 
 ---
@@ -79,7 +79,7 @@ Every command passes through safety middleware according to the active context's
 
 | Safety Level | Permitted Operations | Blocked Operations |
 | :--- | :--- | :--- |
-| `readonly` | Read-only actions (`*.get`, `describe`, `query`, `doctor`, `inventory`, `commands`) | Any mutating action (`*.create`, `*.update`, `*.delete`, `history.push`, `exec`) |
+| `readonly` | Read-only actions (`*.get`, `describe`, `query`, `doctor`, `cluster-info`, `commands`) | Any mutating action (`*.create`, `*.update`, `*.delete`, `history.push`, `exec`) |
 | `readwrite-mine` | Read-only + mutations on resources tagged `zbxctl=true` or `managed-by=zbxctl` | Un-tagged or instance-wide destructive edits |
 | `readwrite-all` | Full administrative API mutations | Destructive bulk deletes without explicit `--force` |
 | `dangerously-unrestricted` | All operations enabled without safety checks | None |
@@ -101,7 +101,7 @@ Every command passes through safety middleware according to the active context's
 
 ---
 
-## 3. Low-Token Agent Self-Discovery Commands
+## 3. Low-Token Agent Self-Discovery & Grounding Commands
 
 When starting a session or grounding context, run:
 
@@ -109,8 +109,8 @@ When starting a session or grounding context, run:
 # 1. Discover all verbs, resources, flags, and raw capabilities (low-token tree format)
 zbxctl commands --brief
 
-# 2. Probe target Zabbix instance for grounding (version, host count, active problems, item count)
-zbxctl inventory
+# 2. Probe target Zabbix instance for sizing & stats (version, total hosts, active problems, items, triggers)
+zbxctl cluster-info
 
 # 3. Diagnose connectivity, credentials, and context safety
 zbxctl doctor
@@ -121,9 +121,10 @@ zbxctl doctor
 ## 4. Tier 1 Ergonomic Commands (High-Frequency Operations)
 
 ### Resource Short Aliases
-- `host` (`h`), `problem` (`p`), `item` (`i`), `trigger` (`t`), `template` (`tmpl`), `hostgroup` (`hg`), `maintenance` (`maint`), `event` (`ev`), `user`, `service`, `sla`, `dashboard`.
+- `host` (`h`, `hosts`), `problem` (`p`, `problems`), `item` (`i`, `items`), `trigger` (`t`, `triggers`), `template` (`tmpl`, `templates`), `hostgroup` (`hg`, `hostgroups`), `maintenance` (`maint`), `event` (`ev`), `user`, `service`, `sla`, `dashboard`.
 
 ### Search, Sort, and Projection Flags
+- `--count`: Return only the total integer count of matched resources (e.g. `zbxctl get host --count`, `zbxctl get problem --count`, `zbxctl get item --host="web-01" --count`).
 - `--fields, -f`: Select specific output fields (e.g. `--fields=templateid,name` or `-f hostid,name,status`).
 - `--sort, -s`: Sort by field name (e.g. `--sort=name`, `--sort=clock`, `--sort=severity`, or `--sort=name:desc`).
 - `--sort-order`: Sort direction (`asc` or `desc`, default `asc`).
@@ -133,8 +134,22 @@ zbxctl doctor
 - `--wide, -w`: Display wide table with all fields.
 - `--export`: Export resources as declarative GitOps manifests (`kind` + `spec`) ready for `apply`/`diff`.
 
+### Domain Disambiguation: Hosts vs. Inventory vs. Sizing
+- **Configured Monitoring Hosts**: Use `zbxctl get host` or `zbxctl get host --count` to query all monitoring endpoints.
+- **Instance Sizing / Sizing Overview**: Use `zbxctl cluster-info` to get total counts across all object types.
+- **Zabbix Asset / Hardware Inventory**: Use `zbxctl describe host <id>` to inspect the hardware/OS inventory block, or `zbxctl get host --filter='{"inventory_mode": [0,1]}'` to filter inventory-enabled hosts.
+
 ### Recipes & Examples
 ```bash
+# Count total configured hosts directly (single integer output)
+zbxctl get host --count
+
+# Count active problems
+zbxctl get problem --count
+
+# Sizing overview of entire instance
+zbxctl cluster-info
+
 # List templates with projection and alphabetical sorting
 zbxctl get template --fields=templateid,name --sort=name -o table
 
@@ -147,7 +162,7 @@ zbxctl get item --host="web-prod-01" --search="cpu" -f itemid,name,key_,lastvalu
 # Query high-severity problems sorted by severity descending
 zbxctl get problem --filter='{"severity": 4}' --sort=severity --sort-order=desc -o json
 
-# Inspect detailed extended configuration for a host
+# Inspect detailed extended configuration for a host (including Host Inventory)
 zbxctl describe host 10001
 
 # Declarative creation/update from manifest
