@@ -47,23 +47,29 @@ Precompiled binaries for Linux, macOS, and Windows are published with every rele
 
 #### Linux (x86_64 / ARM64)
 ```bash
-# Download and install the latest Linux binary
-curl -sL https://github.com/ErKatta/zbxctl/releases/latest/download/zbxctl_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/' | sed 's/aarch64/arm64/').tar.gz | tar -xz
+# One-line auto-installer (detects latest release & architecture)
+TAG=$(curl -s https://api.github.com/repos/ErKatta/zbxctl/releases/latest | grep '"tag_name":' | cut -d'"' -f4)
+ARCH=$(uname -m | sed 's/x86_64/amd64/' | sed 's/aarch64/arm64/')
+curl -sL "https://github.com/ErKatta/zbxctl/releases/download/${TAG}/zbxctl_${TAG#v}_linux_${ARCH}.tar.gz" | tar -xz
 sudo mv zbxctl /usr/local/bin/
 ```
 
 #### macOS (Apple Silicon M-Series / Intel)
 ```bash
-# Download and install the latest macOS binary
-curl -sL https://github.com/ErKatta/zbxctl/releases/latest/download/zbxctl_darwin_$(uname -m | sed 's/x86_64/amd64/' | sed 's/arm64/arm64/').tar.gz | tar -xz
+# One-line auto-installer (detects latest release & architecture)
+TAG=$(curl -s https://api.github.com/repos/ErKatta/zbxctl/releases/latest | grep '"tag_name":' | cut -d'"' -f4)
+ARCH=$(uname -m | sed 's/x86_64/amd64/' | sed 's/arm64/arm64/')
+curl -sL "https://github.com/ErKatta/zbxctl/releases/download/${TAG}/zbxctl_${TAG#v}_darwin_${ARCH}.tar.gz" | tar -xz
 sudo mv zbxctl /usr/local/bin/
 ```
 
 #### Windows (x86_64)
-Download the latest [`zbxctl_windows_amd64.zip`](https://github.com/ErKatta/zbxctl/releases/latest) from GitHub Releases, extract the archive, and add `zbxctl.exe` to your `PATH`.
+Download the latest [`zbxctl_*_windows_amd64.zip`](https://github.com/ErKatta/zbxctl/releases/latest) from GitHub Releases, extract the archive, and add `zbxctl.exe` to your `PATH`.
 Or install via PowerShell:
 ```powershell
-Invoke-WebRequest -Uri "https://github.com/ErKatta/zbxctl/releases/latest/download/zbxctl_windows_amd64.zip" -OutFile "zbxctl.zip"
+$tag = (Invoke-RestMethod -Uri "https://api.github.com/repos/ErKatta/zbxctl/releases/latest").tag_name
+$ver = $tag.TrimStart('v')
+Invoke-WebRequest -Uri "https://github.com/ErKatta/zbxctl/releases/download/$tag/zbxctl_${ver}_windows_amd64.zip" -OutFile "zbxctl.zip"
 Expand-Archive zbxctl.zip -DestinationPath "$HOME\bin"
 ```
 
