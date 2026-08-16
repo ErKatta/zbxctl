@@ -211,14 +211,24 @@ zbxctl get telemetry 23253 --since=4h -o table
 # Get items belonging to a host with specific fields
 zbxctl get item --host="Zabbix server" --fields=itemid,name,description
 
-# Inspect detailed metadata for a resource
+# Inspect detailed metadata for a resource (including full inventory block)
 zbxctl describe host 10001
+zbxctl describe inventory 10001
+
+# Query hardware and asset CMDB inventory records
+# (Aliases: 'inv', 'host-inventory', 'inventories')
+zbxctl get inventory
+zbxctl get inventory -f hostid,name,vendor,model,macaddress_a -o table
+zbxctl get inv --search="Dell" -o json
 
 # Advanced query search
 zbxctl query item --search="key_=system.cpu" --limit=5
+zbxctl query inventory --search="Linux" --sort=name
 
-# Declarative creation/update from YAML/JSON manifest
-zbxctl apply -f manifest.yaml
+# Declarative creation/update from YAML/JSON manifest (or stdin)
+zbxctl apply -f host-manifest.yaml
+zbxctl apply -f inv-manifest.yaml
+cat inv-manifest.yaml | zbxctl apply -f -
 
 # Compare local manifest with live resource
 zbxctl diff -f manifest.yaml --id=10001

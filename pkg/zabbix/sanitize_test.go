@@ -218,3 +218,53 @@ func TestSanitizeDiffSpecHost(t *testing.T) {
 		t.Errorf("expected flags to be removed from diff spec")
 	}
 }
+
+func TestSanitizeApplyParamsInventory(t *testing.T) {
+	rawParams := map[string]interface{}{
+		"hostid":       "10002",
+		"mode":         "manual",
+		"vendor":       "Dell",
+		"model":        "PowerEdge R740",
+		"macaddress_a": "00:1A:2B:3C:4D:5E",
+	}
+
+	sanitized := SanitizeApplyParams("inventory", rawParams)
+	if sanitized["hostid"] != "10002" {
+		t.Errorf("expected hostid 10002, got %v", sanitized["hostid"])
+	}
+	if sanitized["inventory_mode"] != 0 {
+		t.Errorf("expected inventory_mode 0, got %v", sanitized["inventory_mode"])
+	}
+	inv, ok := sanitized["inventory"].(map[string]interface{})
+	if !ok {
+		t.Fatalf("expected nested inventory map, got %T", sanitized["inventory"])
+	}
+	if inv["vendor"] != "Dell" || inv["model"] != "PowerEdge R740" {
+		t.Errorf("expected vendor Dell and model PowerEdge R740, got %v, %v", inv["vendor"], inv["model"])
+	}
+}
+
+func TestSanitizeExportSpecInventory(t *testing.T) {
+	rawSpec := map[string]interface{}{
+		"hostid":         "10002",
+		"host":           "web-prod-01",
+		"inventory_mode": "0",
+		"inventory": map[string]interface{}{
+			"vendor": "Dell",
+			"model":  "PowerEdge R740",
+			"notes":  "",
+		},
+	}
+
+	cleaned := SanitizeExportSpec("inventory", rawSpec)
+	inv, ok := cleaned["inventory"].(map[string]interface{})
+	if !ok {
+		t.Fatalf("expected inventory map, got %T", cleaned["inventory"])
+	}
+	if _, hasNotes := inv["notes"]; hasNotes {
+		t.Errorf("did not expect empty notes in exported inventory spec")
+	}
+	if inv["vendor"] != "Dell" {
+		t.Errorf("expected vendor Dell, got %v", inv["vendor"])
+	}
+}

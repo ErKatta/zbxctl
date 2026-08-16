@@ -27,6 +27,16 @@ var ResourceMap = map[string]ResourceInfo{
 		Description:      "Zabbix monitored hosts",
 		SearchFields:     []string{"host", "name"},
 	},
+	"inventory": {
+		Name:             "inventory",
+		Aliases:          []string{"inv", "host-inventory", "inventories"},
+		APIPrefix:        "host",
+		IDProperty:       "hostid",
+		PluralIDProperty: "hostids",
+		NameProperty:     "name",
+		Description:      "Zabbix host asset and hardware inventory",
+		SearchFields:     []string{"host", "name", "type", "vendor", "model", "macaddress_a", "serialno_a", "os"},
+	},
 	"problem": {
 		Name:             "problem",
 		Aliases:          []string{"p", "problems"},

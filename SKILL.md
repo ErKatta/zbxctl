@@ -124,11 +124,11 @@ zbxctl doctor
 ## 4. Tier 1 Ergonomic Commands (High-Frequency Operations)
 
 ### Resource Short Aliases
-- `host` (`h`, `hosts`), `problem` (`p`, `problems`), `item` (`i`, `items`), `trigger` (`t`, `triggers`), `template` (`tmpl`, `templates`), `hostgroup` (`hg`, `hostgroups`), `maintenance` (`maint`), `event` (`ev`), `user`, `service`, `sla`, `dashboard`.
+- `host` (`h`, `hosts`), `inventory` (`inv`, `host-inventory`, `inventories`), `problem` (`p`, `problems`), `item` (`i`, `items`), `trigger` (`t`, `triggers`), `template` (`tmpl`, `templates`), `hostgroup` (`hg`, `hostgroups`), `maintenance` (`maint`), `event` (`ev`), `user`, `service`, `sla`, `dashboard`, `metric` (`telemetry`, `history`).
 
 ### Search, Sort, and Projection Flags
 - `--count`: Return only the total integer count of matched resources (e.g. `zbxctl get host --count`, `zbxctl get problem --count`, `zbxctl get item --host="web-01" --count`).
-- `--fields, -f`: Select specific output fields (e.g. `--fields=templateid,name` or `-f hostid,name,status`).
+- `--fields, -f`: Select specific output fields (e.g. `--fields=templateid,name` or `-f hostid,name,vendor,model`).
 - `--sort, -s`: Sort by field name (e.g. `--sort=name`, `--sort=clock`, `--sort=severity`, or `--sort=name:desc`).
 - `--sort-order`: Sort direction (`asc` or `desc`, default `asc`).
 - `--search`: Search term across primary resource text fields (partial match with `*` wildcards supported) or `key=value`.
@@ -138,9 +138,9 @@ zbxctl doctor
 - `--export`: Export resources as declarative GitOps manifests (`kind` + `spec`) ready for `apply`/`diff`.
 
 ### Domain Disambiguation: Hosts vs. Inventory vs. Sizing
-- **Configured Monitoring Hosts**: Use `zbxctl get host` or `zbxctl get host --count` to query all monitoring endpoints.
-- **Instance Sizing / Sizing Overview**: Use `zbxctl cluster-info` to get total counts across all object types.
-- **Zabbix Asset / Hardware Inventory**: Use `zbxctl describe host <id>` to inspect the hardware/OS inventory block, or `zbxctl get host --filter='{"inventory_mode": [0,1]}'` to filter inventory-enabled hosts.
+- **Configured Monitoring Hosts**: Use `zbxctl get host` or `zbxctl get host --count` to query all operational monitoring endpoints.
+- **Instance Sizing / Sizing Overview**: Use `zbxctl cluster-info` to get total counts across all object types (hosts, items, triggers, problems).
+- **Zabbix Asset / Hardware Inventory**: Use `zbxctl get inventory` (or `zbxctl get inv`) for dedicated CMDB asset queries, `zbxctl describe inventory <id>` or `zbxctl describe host <id>` for detailed metadata, and `zbxctl apply -f inv.yaml` with `kind: inventory` for declarative asset synchronization.
 
 ### Recipes & Examples
 ```bash
@@ -152,6 +152,11 @@ zbxctl get problem --count
 
 # Sizing overview of entire instance
 zbxctl cluster-info
+
+# Query hardware and asset CMDB inventory records
+zbxctl get inventory -o table
+zbxctl get inventory -f hostid,name,vendor,model,macaddress_a -o table
+zbxctl get inv --search="Dell" -o json
 
 # List templates with projection and alphabetical sorting
 zbxctl get template --fields=templateid,name --sort=name -o table
@@ -165,14 +170,17 @@ zbxctl get item --host="web-prod-01" --search="cpu" -f itemid,name,key_,lastvalu
 # Query high-severity problems sorted by severity descending
 zbxctl get problem --filter='{"severity": 4}' --sort=severity --sort-order=desc -o json
 
-# Inspect detailed extended configuration for a host (including Host Inventory)
+# Inspect detailed extended configuration for a host (including Host Inventory block)
 zbxctl describe host 10001
+zbxctl describe inventory 10001
 
-# Declarative creation/update from manifest
-zbxctl apply -f manifest.yaml
+# Declarative creation/update from manifest or stdin
+zbxctl apply -f host-manifest.yaml
+zbxctl apply -f inv-manifest.yaml
+cat inv-manifest.yaml | zbxctl apply -f -
 
 # Compare local manifest against live Zabbix resource
-zbxctl diff -f manifest.yaml --id=10001
+zbxctl diff -f host-manifest.yaml --id=10001
 
 # Export declarative manifests for all templates or a single host
 zbxctl get template --export -o yaml
@@ -193,7 +201,7 @@ zbxctl wait problem 12345 --for=resolved --timeout=60s
 
 ## 5. Tier 2 Universal Raw API Engine (100% Zabbix 7 API Coverage)
 
-> **Rule for AI Agents:** Always prefer `zbxctl get` or `zbxctl query` for querying, filtering, sorting, and projecting standard Zabbix resources. Use `zbxctl raw` **only** for unmapped API methods (e.g. `connector.*`, `ha.*`, `proxygroup.*`, `valuemap.*`, `task.create`) or custom non-standard JSON payloads.
+> **Rule for AI Agents:** Always prioritize Tier 1 standard verbs (`zbxctl get`, `zbxctl describe`, `zbxctl query`, `zbxctl apply`, `zbxctl delete`) for all monitoring resources and asset inventories. Do NOT use `zbxctl raw host.get` or `zbxctl raw host.update` for inventory tasks. Use `zbxctl raw` **only as a last resort** for unmapped API namespaces (e.g. `connector.*`, `ha.*`, `proxygroup.*`, `valuemap.*`, `task.create`).
 
 Invoke *any* Zabbix 7 JSON-RPC API endpoint with safety middleware filtering applied:
 

@@ -3,6 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 
@@ -25,9 +26,18 @@ var diffCmd = &cobra.Command{
 			return fmt.Errorf("--file (-f) is required")
 		}
 
-		data, err := os.ReadFile(diffFileFlag)
-		if err != nil {
-			return fmt.Errorf("failed to read file %s: %w", diffFileFlag, err)
+		var data []byte
+		var err error
+		if diffFileFlag == "-" {
+			data, err = io.ReadAll(os.Stdin)
+			if err != nil {
+				return fmt.Errorf("failed to read manifest from stdin: %w", err)
+			}
+		} else {
+			data, err = os.ReadFile(diffFileFlag)
+			if err != nil {
+				return fmt.Errorf("failed to read file %s: %w", diffFileFlag, err)
+			}
 		}
 
 		var item ManifestItem
@@ -78,6 +88,7 @@ var diffCmd = &cobra.Command{
 			params["selectMacros"] = "extend"
 			params["selectParentTemplates"] = "extend"
 			params["selectInterfaces"] = "extend"
+			params["selectInventory"] = "extend"
 		case "template":
 			params["selectTags"] = "extend"
 			params["selectGroups"] = "extend"

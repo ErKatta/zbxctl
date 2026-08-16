@@ -20,6 +20,47 @@ func SanitizeApplyParams(resource string, rawParams map[string]interface{}) map[
 	}
 
 	switch normRes {
+	case "inventory":
+		// Handle mode/inventory_mode
+		if modeVal, ok := params["mode"]; ok {
+			strMode := strings.ToLower(strings.TrimSpace(fmt.Sprintf("%v", modeVal)))
+			if strMode == "manual" || strMode == "0" {
+				params["inventory_mode"] = 0
+			} else if strMode == "automatic" || strMode == "auto" || strMode == "1" {
+				params["inventory_mode"] = 1
+			} else if strMode == "disabled" || strMode == "-1" {
+				params["inventory_mode"] = -1
+			}
+			delete(params, "mode")
+		}
+
+		invMap := make(map[string]interface{})
+		if rawInv, exists := params["inventory"]; exists {
+			if m, ok := rawInv.(map[string]interface{}); ok {
+				for k, v := range m {
+					invMap[k] = v
+				}
+			}
+		}
+
+		// Collect other top-level inventory fields into invMap
+		reservedKeys := map[string]bool{
+			"hostid": true, "host": true, "name": true, "inventory_mode": true, "inventory": true,
+		}
+		for k, v := range params {
+			if !reservedKeys[k] && v != nil {
+				invMap[k] = v
+				delete(params, k)
+			}
+		}
+
+		if len(invMap) > 0 {
+			params["inventory"] = invMap
+			if _, hasMode := params["inventory_mode"]; !hasMode {
+				params["inventory_mode"] = 0 // default to manual mode when inventory is provided
+			}
+		}
+
 	case "host":
 		// 1. Sanitize groups -> must be array of objects with groupid only
 		if rawGroups, exists := params["groups"]; exists {
@@ -134,6 +175,18 @@ func SanitizeExportSpec(resource string, rawSpec map[string]interface{}) map[str
 	}
 
 	switch normRes {
+	case "inventory":
+		if inv, ok := spec["inventory"].(map[string]interface{}); ok {
+			cleanInv := make(map[string]interface{})
+			for k, v := range inv {
+				str := strings.TrimSpace(fmt.Sprintf("%v", v))
+				if str != "" && str != "<nil>" {
+					cleanInv[k] = v
+				}
+			}
+			spec["inventory"] = cleanInv
+		}
+
 	case "host":
 		// 1. Clean groups
 		if rawGroups, exists := spec["groups"]; exists {
@@ -202,6 +255,18 @@ func SanitizeDiffSpec(resource string, rawSpec map[string]interface{}) map[strin
 	}
 
 	switch normRes {
+	case "inventory":
+		if inv, ok := spec["inventory"].(map[string]interface{}); ok {
+			cleanInv := make(map[string]interface{})
+			for k, v := range inv {
+				str := strings.TrimSpace(fmt.Sprintf("%v", v))
+				if str != "" && str != "<nil>" {
+					cleanInv[k] = v
+				}
+			}
+			spec["inventory"] = cleanInv
+		}
+
 	case "host":
 		// 1. Normalize groups -> array of map with groupid
 		if rawGroups, exists := spec["groups"]; exists {

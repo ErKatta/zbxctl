@@ -114,6 +114,7 @@ When inspecting a single resource by ID/name or when exporting declarative manif
 				params["selectMacros"] = "extend"
 				params["selectParentTemplates"] = "extend"
 				params["selectInterfaces"] = "extend"
+				params["selectInventory"] = "extend"
 			case "hostgroup":
 				params["selectTags"] = "extend"
 			case "item":
@@ -123,6 +124,11 @@ When inspecting a single resource by ID/name or when exporting declarative manif
 				params["selectTags"] = "extend"
 				params["selectDependencies"] = "extend"
 			}
+		}
+
+		if resInfo.Name == "inventory" {
+			params["selectInventory"] = "extend"
+			params["output"] = []string{"hostid", "host", "name", "inventory_mode"}
 		}
 
 		if limitFlag > 0 {
@@ -170,7 +176,7 @@ When inspecting a single resource by ID/name or when exporting declarative manif
 				}
 			}
 			// Pass field list directly to Zabbix API if it's not a resource that requires relation lookup for enrichment
-			if len(fieldList) > 0 && resInfo.APIPrefix != "problem" && resInfo.APIPrefix != "event" {
+			if len(fieldList) > 0 && resInfo.APIPrefix != "problem" && resInfo.APIPrefix != "event" && resInfo.Name != "inventory" {
 				params["output"] = fieldList
 			}
 		}
@@ -279,7 +285,7 @@ When inspecting a single resource by ID/name or when exporting declarative manif
 			return err
 		}
 
-		// Enrich problems / events with host, status, and ack relations
+		// Enrich problems / events / inventory relations
 		if resInfo.APIPrefix == "problem" {
 			if raw, ok := res.(json.RawMessage); ok {
 				res = enrichProblems(cmd.Context(), raw)
@@ -287,6 +293,10 @@ When inspecting a single resource by ID/name or when exporting declarative manif
 		} else if resInfo.APIPrefix == "event" {
 			if raw, ok := res.(json.RawMessage); ok {
 				res = enrichEvents(cmd.Context(), raw)
+			}
+		} else if resInfo.Name == "inventory" {
+			if raw, ok := res.(json.RawMessage); ok {
+				res = enrichInventory(raw)
 			}
 		}
 

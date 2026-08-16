@@ -49,8 +49,11 @@ var RootCmd = &cobra.Command{
 	Long: `zbxctl is a high-performance command-line tool tailored for both human engineers and AI coding agents.
 It provides a Tier 1 ergonomic verb-noun interface for common operations and a Tier 2 raw JSON-RPC engine for 100% Zabbix 7 API coverage.`,
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-		var err error
-		cfg, err = config.LoadConfig(cfgFile)
+		cfgPath, err := getConfigPath(cmd)
+		if err != nil {
+			return err
+		}
+		cfg, err = config.LoadConfig(cfgPath)
 		if err != nil {
 			return fmt.Errorf("failed to load config: %w", err)
 		}

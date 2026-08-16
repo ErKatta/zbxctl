@@ -68,6 +68,11 @@ var queryCmd = &cobra.Command{
 			"output": "extend",
 		}
 
+		if resInfo.Name == "inventory" {
+			params["selectInventory"] = "extend"
+			params["output"] = []string{"hostid", "host", "name", "inventory_mode"}
+		}
+
 		var fieldList []string
 		if fieldsFlag != "" {
 			for _, f := range strings.Split(fieldsFlag, ",") {
@@ -75,7 +80,7 @@ var queryCmd = &cobra.Command{
 					fieldList = append(fieldList, trimmed)
 				}
 			}
-			if len(fieldList) > 0 && resInfo.APIPrefix != "problem" && resInfo.APIPrefix != "event" {
+			if len(fieldList) > 0 && resInfo.APIPrefix != "problem" && resInfo.APIPrefix != "event" && resInfo.Name != "inventory" {
 				params["output"] = fieldList
 			}
 		}
@@ -160,7 +165,7 @@ var queryCmd = &cobra.Command{
 			return err
 		}
 
-		// Enrich problems / events with host, status, and ack relations
+		// Enrich problems / events / inventory relations
 		if resInfo.APIPrefix == "problem" {
 			if raw, ok := res.(json.RawMessage); ok {
 				res = enrichProblems(cmd.Context(), raw)
@@ -168,6 +173,10 @@ var queryCmd = &cobra.Command{
 		} else if resInfo.APIPrefix == "event" {
 			if raw, ok := res.(json.RawMessage); ok {
 				res = enrichEvents(cmd.Context(), raw)
+			}
+		} else if resInfo.Name == "inventory" {
+			if raw, ok := res.(json.RawMessage); ok {
+				res = enrichInventory(raw)
 			}
 		}
 

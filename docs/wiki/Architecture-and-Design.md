@@ -58,5 +58,29 @@ To support different operational backgrounds without code duplication, `zbxctl` 
 - **`metric` / `metrics`**: Familiar to Prometheus, Grafana, and Datadog users (`zbxctl get metric 23253 --since=4h`).
 - **`telemetry`**: Familiar to OpenTelemetry and APM engineers (`zbxctl get telemetry 23253 --since=4h`).
 - **`history`**: Native Zabbix RPC terminology (`zbxctl get history 23253 --since=4h`).
+- **`inventory` / `inv` / `host-inventory`**: Asset and hardware CMDB records decoupled from operational host monitoring.
 
-All four aliases map to the exact same underlying `history.get` RPC execution engine in `pkg/zabbix/mapping.go`.
+All aliases map to the appropriate underlying RPC execution engine in `pkg/zabbix/mapping.go`.
+
+---
+
+## Architectural Decision Records (ADR)
+
+### ADR-001: Decoupling Host Monitoring from Asset / CMDB Inventory
+
+- **Status**: Accepted
+- **Date**: 2026-08-16
+- **Context**:
+  In Zabbix 7, host asset inventory (OS version, vendor, hardware model, serial number, MAC address, contact details, chassis, location) is stored under the `host.*` JSON-RPC methods as a nested `inventory` dictionary.
+  In previous iterations, querying or modifying inventory required either treating the entire host as a monolithic object or resorting to raw JSON-RPC calls (`zbxctl raw host.get` / `zbxctl raw host.update`). Furthermore, the word `inventory` was overloaded as a cluster sizing alias (`zbxctl cluster-info`).
+- **Decision**:
+  Adopt the **`kubectl` architectural pattern** of decoupling operational resource state from asset/CMDB metadata:
+  1. **First-Class Logical Resource**: Expose `inventory` (aliases: `inv`, `host-inventory`, `inventories`) as an independent resource in `pkg/zabbix/mapping.go`.
+  2. **Dedicated Table Schema & Field Projection**: `zbxctl get inventory` defaults to asset-focused columns (`HOSTID`, `HOST`, `NAME`, `MODE`, `TYPE`, `VENDOR`, `MODEL`, `MAC`, `OS`), automatically flattening nested inventory attributes for column selection and search.
+  3. **Composite Host Inspection**: `zbxctl describe host <id>` retrieves `selectInventory: "extend"` alongside interfaces, tags, and groups, preserving comprehensive host inspection.
+  4. **Declarative GitOps Manifests**: Enable `kind: inventory` in `zbxctl apply -f <manifest>` (and standard input streaming via `-f -`), allowing asset tracking automation to update inventory without modifying monitoring interfaces or template links.
+  5. **Domain Disambiguation**: Remove `inventory` alias from `zbxctl cluster-info` so `inventory` strictly refers to hardware and asset records.
+- **Consequences**:
+  - Clean separation between monitoring engineers managing telemetry/triggers and CMDB/asset teams managing hardware metadata.
+  - Eliminates the need for AI agents to fall back to `zbxctl raw host.get` or `zbxctl raw host.update` for inventory workflows.
+  - Full compatibility with standard UNIX pipeline workflows (`cat inv.yaml | zbxctl apply -f -`).
