@@ -1,0 +1,42 @@
+name: CI Pipeline
+
+on:
+ push:
+ branches: [ main, dev ]
+ pull_request:
+ branches: [ main ]
+
+jobs:
+ test:
+ name: Build & Test (${{ matrix.os }}, Go ${{ matrix.go-version }})
+ runs-on: ${{ matrix.os }}
+ strategy:
+ matrix:
+ os: [ubuntu-latest, macos-latest, windows-latest]
+ go-version: ['1.22', '1.23']
+
+ steps:
+ - name: Checkout Code
+ uses: actions/checkout@v4
+
+ - name: Set up Go
+ uses: actions/setup-go@v5
+ with:
+ go-version: ${{ matrix.go-version }}
+ cache: true
+
+ - name: Verify Formatting & Go Modules
+ run: |
+ go vet ./...
+ git diff --exit-code
+
+ - name: Run Tests with Race Detector
+ if: matrix.os != 'windows-latest'
+ run: go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
+
+ - name: Run Tests (Windows)
+ if: matrix.os == 'windows-latest'
+ run: go test -v ./...
+
+ - name: Build Binary
+ run: go build -v -o zbxctl main.go

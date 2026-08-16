@@ -1,0 +1,67 @@
+version: 2
+project_name: zbxctl
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: zbxctl
+    main: ./main.go
+    binary: zbxctl
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: windows
+        goarch: arm64
+    ldflags:
+      - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}
+
+archives:
+  - id: default
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - README.md
+      - LICENSE
+      - CODE_OF_CONDUCT.md
+      - SECURITY.md
+
+checksum:
+  name_template: "checksums.txt"
+
+snapshot:
+  name_template: "{{ .Tag }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - Merge pull request
+      - Merge branch
+
+release:
+  github:
+    owner: ErKatta
+    name: zbxctl
+  draft: false
+  prerelease: auto
+  header: |
+    ## zbxctl {{ .Tag }} Release 🚀
+
+    `zbxctl` is an open-source CLI & automation engine for Zabbix 7.0+ LTS inspired by `dtctl` and `kubectl`.
+
+    ### Verified Compatibility
+    - Zabbix 7.0+ LTS
+    - Go 1.22+

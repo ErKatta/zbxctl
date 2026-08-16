@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "zbxctl"
+abstract: "A developer-first, cloud-native CLI and declarative automation engine for Zabbix 7.0+ LTS inspired by dtctl and kubectl."
+authors:
+  - family-names: "Cattarin"
+    given-names: "Marco"
+repository-code: "https://github.com/ErKatta/zbxctl"
+url: "https://erkatta.github.io/zbxctl/"
+license: "Apache-2.0"
+keywords:
+  - zabbix
+  - cli
+  - observability
+  - automation
+  - kubectl
+  - dtctl
+  - ai-agents

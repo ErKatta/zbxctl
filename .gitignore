@@ -1,0 +1,43 @@
+# Compiled binaries
+zbxctl
+zbxctl.exe
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+dist/
+build/
+
+# Test binaries and coverage artifacts
+*.test
+*.out
+coverage.txt
+
+# Local configuration, tokens & credentials
+config.yaml
+*.config.yaml
+config.local.yaml
+.zbxctl/
+.env
+.env.*
+*.pem
+*.key
+*.crt
+
+# Local development, test artifacts & temporary files
+scratch/
+test*.yaml
+*test*.yaml
+*.tmp
+*.bak
+*.log
+.agents/
+.claude/
+
+# OS / Editor specific
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
