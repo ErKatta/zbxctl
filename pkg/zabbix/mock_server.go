@@ -41,6 +41,13 @@ func NewMockZabbixServer() *MockServer {
 			ID:      req.ID,
 		}
 
+		hasCount := false
+		if pMap, ok := req.Params.(map[string]interface{}); ok {
+			if cnt, exists := pMap["countOutput"]; exists && cnt == true {
+				hasCount = true
+			}
+		}
+
 		switch req.Method {
 		case "apiinfo.version":
 			resp.Result = json.RawMessage(`"7.0.0"`)
@@ -49,6 +56,10 @@ func NewMockZabbixServer() *MockServer {
 			resp.Result = json.RawMessage(`"mock-session-token-12345"`)
 
 		case "host.get":
+			if hasCount {
+				resp.Result = json.RawMessage(`"2"`)
+				break
+			}
 			resp.Result = json.RawMessage(`[
 				{"hostid": "10001", "host": "Zabbix server", "name": "Zabbix server", "status": "0", "groups": [{"groupid": "1", "name": "Discovered hosts", "flags": "0"}], "parentTemplates": [{"templateid": "40001", "name": "Linux by Zabbix agent", "flags": "0"}], "interfaces": [{"interfaceid": "1", "main": "1", "type": "1", "useip": "1", "ip": "127.0.0.1", "dns": "", "port": "10050", "available": "0"}]},
 				{"hostid": "10002", "host": "web-prod-01", "name": "web-prod-01", "status": "0"}
@@ -61,26 +72,46 @@ func NewMockZabbixServer() *MockServer {
 			resp.Result = json.RawMessage(`{"hostids": ["10001"]}`)
 
 		case "problem.get":
+			if hasCount {
+				resp.Result = json.RawMessage(`"1"`)
+				break
+			}
 			resp.Result = json.RawMessage(`[
 				{"eventid": "1", "name": "High CPU utilization", "severity": "4", "objectid": "30001", "clock": "1700000000", "acknowledged": "0"}
 			]`)
 
 		case "item.get":
+			if hasCount {
+				resp.Result = json.RawMessage(`"1"`)
+				break
+			}
 			resp.Result = json.RawMessage(`[
 				{"itemid": "20001", "name": "CPU load", "key_": "system.cpu.load", "hostid": "10001"}
 			]`)
 
 		case "trigger.get":
+			if hasCount {
+				resp.Result = json.RawMessage(`"1"`)
+				break
+			}
 			resp.Result = json.RawMessage(`[
 				{"triggerid": "30001", "description": "CPU high", "priority": "4", "hosts": [{"hostid": "10002", "host": "web-prod-01", "name": "web-prod-01"}]}
 			]`)
 
 		case "template.get":
+			if hasCount {
+				resp.Result = json.RawMessage(`"1"`)
+				break
+			}
 			resp.Result = json.RawMessage(`[
 				{"templateid": "40001", "name": "Linux by Zabbix agent"}
 			]`)
 
 		case "hostgroup.get":
+			if hasCount {
+				resp.Result = json.RawMessage(`"2"`)
+				break
+			}
 			resp.Result = json.RawMessage(`[
 				{"groupid": "1", "name": "Discovered hosts"},
 				{"groupid": "2", "name": "Linux servers"}

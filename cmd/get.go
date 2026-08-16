@@ -24,6 +24,7 @@ var (
 	getAllFieldsFlag    bool
 	getWideFlag         bool
 	getExportFlag       bool
+	getCountFlag        bool
 )
 
 var getCmd = &cobra.Command{
@@ -43,7 +44,7 @@ When inspecting a single resource by ID/name or when exporting declarative manif
 
 		var filterFlag, searchFlag, searchFieldsFlag, sortFlag, sortOrderFlag, hostFlag, fieldsFlag, sinceFlag string
 		var limitFlag, historyTypeFlag int
-		var allFieldsFlag, wideFlag, exportFlag bool
+		var allFieldsFlag, wideFlag, exportFlag, countFlag bool
 
 		if cmd.Flags().Changed("filter") {
 			filterFlag, _ = cmd.Flags().GetString("filter")
@@ -84,14 +85,20 @@ When inspecting a single resource by ID/name or when exporting declarative manif
 		if cmd.Flags().Changed("export") {
 			exportFlag, _ = cmd.Flags().GetBool("export")
 		}
+		if cmd.Flags().Changed("count") {
+			countFlag, _ = cmd.Flags().GetBool("count")
+		}
 
 		method := resInfo.APIPrefix + ".get"
 		params := map[string]interface{}{
 			"output": "extend",
 		}
+		if countFlag {
+			params["countOutput"] = true
+		}
 
 		isSingleTarget := len(args) == 2
-		shouldExportManifest := exportFlag || (isSingleTarget && (formatter.Format == "yaml" || formatter.Format == "json"))
+		shouldExportManifest := !countFlag && (exportFlag || (isSingleTarget && (formatter.Format == "yaml" || formatter.Format == "json")))
 
 		// When inspecting a single resource or exporting declarative manifests, include extended relations
 		if shouldExportManifest {
@@ -283,6 +290,17 @@ When inspecting a single resource by ID/name or when exporting declarative manif
 			}
 		}
 
+		if countFlag {
+			count := parseCountResult(res)
+			if formatter.Format == "json" || formatter.Format == "toon" {
+				return formatter.Print(map[string]int{"count": count})
+			} else if formatter.Format == "yaml" {
+				return formatter.Print(map[string]int{"count": count})
+			}
+			fmt.Fprintln(formatter.Writer, count)
+			return nil
+		}
+
 		if shouldExportManifest {
 			return outputAsExportManifest(res, resInfo.Name, isSingleTarget)
 		}
@@ -365,5 +383,6 @@ func init() {
 	getCmd.Flags().BoolVar(&getAllFieldsFlag, "all-fields", false, "display all available resource fields in table view")
 	getCmd.Flags().BoolVarP(&getWideFlag, "wide", "w", false, "display wide output with all fields")
 	getCmd.Flags().BoolVar(&getExportFlag, "export", false, "export as declarative GitOps manifests (kind + spec) with extended relations")
+	getCmd.Flags().BoolVar(&getCountFlag, "count", false, "return only the total count of matched resources")
 	RootCmd.AddCommand(getCmd)
 }

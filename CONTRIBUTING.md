@@ -40,7 +40,7 @@ Thank you for your interest in contributing to `zbxctl`! We welcome contribution
 `zbxctl` relies on a clean, decoupled Go package layout:
 
 - **`main.go`**: Entry point delegating command parsing to `cmd/`.
-- **`cmd/`**: Cobra command registry containing Tier 1 ergonomic verbs (`get`, `describe`, `apply`, `delete`, `query`, `exec`, `wait`, `doctor`, `inventory`) and Tier 2 raw JSON-RPC caller (`raw`).
+- **`cmd/`**: Cobra command registry containing Tier 1 ergonomic verbs (`get`, `describe`, `apply`, `delete`, `query`, `exec`, `wait`, `doctor`, `cluster-info`) and Tier 2 raw JSON-RPC caller (`raw`).
 - **`pkg/zabbix/`**: Zabbix JSON-RPC HTTP client driver supporting API Tokens, Basic Auth, User/Password, and mTLS.
 - **`pkg/safety/`**: Client-side safety middleware enforcing execution boundaries (`readonly`, `readwrite-mine`, `readwrite-all`, `dangerously-unrestricted`).
 - **`pkg/formatter/`**: Multi-format output renderers (JSON, Terminal Table, TOON, YAML) and automatic credential redaction middleware.
