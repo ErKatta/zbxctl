@@ -1,5 +1,5 @@
 <p align="center">
- <img src="docs/logo.svg" alt="zbxctl Logo" width="140">
+ <img src="docs/zbxctl_logo.png" alt="zbxctl Logo" width="140">
 </p>
 
 # `zbxctl` - Open Source Zabbix 7 CLI & Automation Engine
