@@ -26,9 +26,10 @@ jobs:
           cache: true
 
       - name: Verify Formatting & Go Modules
-        run: |
-          go vet ./...
-          git diff --exit-code
+        run: go vet ./...
+
+      - name: Check for uncommitted changes
+        run: git diff --exit-code
 
       - name: Run Tests with Race Detector
         if: matrix.os == 'ubuntu-latest'
