@@ -10,6 +10,9 @@ jobs:
   test:
     name: Build & Test (${{ matrix.os }}, Go ${{ matrix.go-version }})
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
@@ -25,13 +28,13 @@ jobs:
           go-version: ${{ matrix.go-version }}
           cache: true
 
-      - name: Verify Formatting & Go Modules
-        run: go vet ./cmd ./internal ./pkg
+      - name: Run Go Vet
+        run: go vet ./...
 
       - name: Check for uncommitted changes
         run: git diff --exit-code
 
-      - name: Run Tests with Race Detector
+      - name: Run Tests with Race Detector (Linux)
         if: matrix.os == 'ubuntu-latest'
         run: go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
 
