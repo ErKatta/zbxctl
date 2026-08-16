@@ -72,3 +72,47 @@ echo "$HOST_ITEMS" | jq .
 # Fetch historical metric telemetry for the last 4 hours
 zbxctl get metric 23253 --since=4h -o json > cpu_telemetry_4h.json
 ```
+
+---
+
+## Python Automation Recipe: Stream Manifests Directly via Stdin
+
+Python automation scripts can dynamically generate resource specs and stream them directly into `zbxctl apply -f -` without writing intermediate files to disk:
+
+```python
+#!/usr/bin/env python3
+import subprocess
+import yaml
+
+manifest = {
+    "kind": "host",
+    "spec": {
+        "host": "web-prod-01",
+        "name": "Web Production 01",
+        "interfaces": [
+            {
+                "type": 1,
+                "main": 1,
+                "useip": 1,
+                "ip": "192.168.1.50",
+                "port": "10050"
+            }
+        ],
+        "groups": [{"groupid": "2"}],
+        "tags": [{"tag": "zbxctl", "value": "true"}]
+    }
+}
+
+manifest_yaml = yaml.dump(manifest)
+
+# Stream manifest directly via stdin using -f -
+proc = subprocess.run(
+    ["zbxctl", "apply", "-f", "-"],
+    input=manifest_yaml,
+    text=True,
+    capture_output=True,
+    check=True
+)
+
+print("Applied Zabbix resource:\n", proc.stdout)
+```

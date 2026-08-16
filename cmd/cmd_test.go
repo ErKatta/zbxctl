@@ -320,13 +320,7 @@ spec:
   vendor: "Dell"
   model: "PowerEdge R740"
 `
-		oldStdin := os.Stdin
-		r, w, _ := os.Pipe()
-		os.Stdin = r
-		w.WriteString(invManifest)
-		w.Close()
-		defer func() { os.Stdin = oldStdin }()
-
+		cmd.SetIn(strings.NewReader(invManifest))
 		buf := new(bytes.Buffer)
 		cmd.SetOut(buf)
 		cmd.SetArgs([]string{"--config", cfgPath, "--context=rw-context", "apply", "-f", "-", "-o", "json"})
@@ -337,6 +331,98 @@ spec:
 		out := buf.String()
 		if !strings.Contains(out, `"action": "updated"`) {
 			t.Errorf("expected action updated in apply stdin output, got:\n%s", out)
+		}
+	})
+
+	t.Run("apply multi-document yaml stream via stdin", func(t *testing.T) {
+		cmd := RootCmd
+		ResetCommandFlags(cmd)
+
+		multiDocManifest := `kind: host
+spec:
+  hostid: "10001"
+  name: "Zabbix server"
+---
+kind: inventory
+spec:
+  hostid: "10001"
+  vendor: "Zabbix"
+  model: "Zabbix-Appliance"
+`
+		cmd.SetIn(strings.NewReader(multiDocManifest))
+		buf := new(bytes.Buffer)
+		cmd.SetOut(buf)
+		cmd.SetArgs([]string{"--config", cfgPath, "--context=rw-context", "apply", "-f", "-", "-o", "json"})
+
+		if err := cmd.Execute(); err != nil {
+			t.Fatalf("apply multi-doc yaml via stdin failed: %v", err)
+		}
+		out := buf.String()
+		if !strings.Contains(out, `"resource": "host"`) || !strings.Contains(out, `"resource": "inventory"`) {
+			t.Errorf("expected both host and inventory results in multi-doc apply output, got:\n%s", out)
+		}
+	})
+
+	t.Run("apply json array via stdin", func(t *testing.T) {
+		cmd := RootCmd
+		ResetCommandFlags(cmd)
+
+		jsonManifest := `[
+  {"kind": "host", "spec": {"hostid": "10001", "name": "Zabbix server"}},
+  {"kind": "host", "spec": {"hostid": "10002", "name": "web-prod-01"}}
+]`
+		cmd.SetIn(strings.NewReader(jsonManifest))
+		buf := new(bytes.Buffer)
+		cmd.SetOut(buf)
+		cmd.SetArgs([]string{"--config", cfgPath, "--context=rw-context", "apply", "-f", "-", "-o", "json"})
+
+		if err := cmd.Execute(); err != nil {
+			t.Fatalf("apply json array via stdin failed: %v", err)
+		}
+		out := buf.String()
+		if !strings.Contains(out, `"action": "updated"`) {
+			t.Errorf("expected updated action in json array apply output, got:\n%s", out)
+		}
+	})
+
+	t.Run("apply empty stdin returns error", func(t *testing.T) {
+		cmd := RootCmd
+		ResetCommandFlags(cmd)
+
+		cmd.SetIn(strings.NewReader("   \n\n  "))
+		buf := new(bytes.Buffer)
+		cmd.SetOut(buf)
+		cmd.SetArgs([]string{"--config", cfgPath, "--context=rw-context", "apply", "-f", "-", "-o", "json"})
+
+		err := cmd.Execute()
+		if err == nil {
+			t.Fatal("expected error on empty stdin apply, got nil")
+		}
+		if !strings.Contains(err.Error(), "empty") {
+			t.Errorf("expected empty input error message, got: %v", err)
+		}
+	})
+
+	t.Run("diff manifest via stdin", func(t *testing.T) {
+		cmd := RootCmd
+		ResetCommandFlags(cmd)
+
+		diffManifest := `kind: host
+spec:
+  hostid: "10001"
+  name: "Zabbix server Renamed"
+`
+		cmd.SetIn(strings.NewReader(diffManifest))
+		buf := new(bytes.Buffer)
+		cmd.SetOut(buf)
+		cmd.SetArgs([]string{"--config", cfgPath, "diff", "-f", "-"})
+
+		if err := cmd.Execute(); err != nil {
+			t.Fatalf("diff via stdin failed: %v", err)
+		}
+		out := buf.String()
+		if !strings.Contains(out, "Zabbix server Renamed") {
+			t.Errorf("expected diff output on name from stdin, got:\n%s", out)
 		}
 	})
 

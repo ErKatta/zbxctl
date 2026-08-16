@@ -174,13 +174,17 @@ zbxctl get problem --filter='{"severity": 4}' --sort=severity --sort-order=desc 
 zbxctl describe host 10001
 zbxctl describe inventory 10001
 
-# Declarative creation/update from manifest or stdin
+# Declarative creation/update from manifest or stdin (-f -)
 zbxctl apply -f host-manifest.yaml
 zbxctl apply -f inv-manifest.yaml
 cat inv-manifest.yaml | zbxctl apply -f -
 
-# Compare local manifest against live Zabbix resource
+# Stream declarative manifests directly from Python scripts via stdin:
+# subprocess.run(["zbxctl", "apply", "-f", "-"], input=manifest_yaml, text=True)
+
+# Compare local manifest against live Zabbix resource (supports stdin -f -)
 zbxctl diff -f host-manifest.yaml --id=10001
+cat host-manifest.yaml | zbxctl diff -f - --id=10001
 
 # Export declarative manifests for all templates or a single host
 zbxctl get template --export -o yaml

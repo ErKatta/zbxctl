@@ -44,3 +44,26 @@ zbxctl skill install --all --agent=claude
 # Export skills to local workspace repository for team Git sharing
 zbxctl skill export zabbix-automation
 ```
+
+---
+
+## Programmatic Manifest Streaming (`zbxctl apply -f -`)
+
+AI agents generating dynamic monitoring manifests can pipe them directly via stdin into `zbxctl apply -f -` (or `zbxctl diff -f -`) without writing scratch files to the filesystem:
+
+```bash
+# Direct pipe via stdin
+echo '{"kind":"host","spec":{"host":"web-01","name":"Web 01"}}' | zbxctl apply -f -
+```
+
+In Python subagent scripts:
+```python
+import subprocess
+
+subprocess.run(
+    ["zbxctl", "apply", "-f", "-"],
+    input=manifest_yaml_or_json,
+    text=True,
+    check=True
+)
+```
