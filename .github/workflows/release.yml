@@ -32,3 +32,6 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Ping Go Module Proxy & pkg.go.dev
+        run: GOPROXY=https://proxy.golang.org go list -m github.com/ErKatta/zbxctl@${{ github.ref_name }}
