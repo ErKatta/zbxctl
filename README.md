@@ -228,10 +228,14 @@ zbxctl query inventory --search="Linux" --sort=name
 # Declarative creation/update from YAML/JSON manifest (or stdin)
 zbxctl apply -f host-manifest.yaml
 zbxctl apply -f inv-manifest.yaml
-cat inv-manifest.yaml | zbxctl apply -f -
 
-# Compare local manifest with live resource
+# Stream manifest directly via stdin (Unix pipe or Python subprocess)
+cat inv-manifest.yaml | zbxctl apply -f -
+python3 -c 'import subprocess; subprocess.run(["zbxctl", "apply", "-f", "-"], input=open("inv-manifest.yaml").read(), text=True)'
+
+# Compare local manifest with live resource (supports -f - from stdin)
 zbxctl diff -f manifest.yaml --id=10001
+cat manifest.yaml | zbxctl diff -f - --id=10001
 
 # Delete resources (requires non-readonly safety level)
 zbxctl delete host 10003

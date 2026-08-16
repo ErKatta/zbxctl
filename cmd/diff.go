@@ -29,7 +29,7 @@ var diffCmd = &cobra.Command{
 		var data []byte
 		var err error
 		if diffFileFlag == "-" {
-			data, err = io.ReadAll(os.Stdin)
+			data, err = io.ReadAll(cmd.InOrStdin())
 			if err != nil {
 				return fmt.Errorf("failed to read manifest from stdin: %w", err)
 			}
@@ -38,6 +38,10 @@ var diffCmd = &cobra.Command{
 			if err != nil {
 				return fmt.Errorf("failed to read file %s: %w", diffFileFlag, err)
 			}
+		}
+
+		if len(strings.TrimSpace(string(data))) == 0 {
+			return fmt.Errorf("manifest input is empty")
 		}
 
 		var item ManifestItem
@@ -201,7 +205,7 @@ func formatDiffValue(v interface{}) string {
 }
 
 func init() {
-	diffCmd.Flags().StringVarP(&diffFileFlag, "file", "f", "", "path to manifest file")
+	diffCmd.Flags().StringVarP(&diffFileFlag, "file", "f", "", "path to manifest file (.json or .yaml), or '-' to read from stdin")
 	diffCmd.Flags().StringVar(&diffIDFlag, "id", "", "ID of live resource to compare against (optional if present in manifest spec)")
 	_ = diffCmd.MarkFlagRequired("file")
 	RootCmd.AddCommand(diffCmd)

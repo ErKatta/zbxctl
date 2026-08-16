@@ -91,6 +91,9 @@ zbxctl apply -f host-manifest.yaml
 zbxctl apply -f inv-manifest.yaml
 cat inv-manifest.yaml | zbxctl apply -f -
 
+# Stream declarative manifests directly from Python scripts via stdin:
+# subprocess.run(["zbxctl", "apply", "-f", "-"], input=manifest_yaml, text=True)
+
 # Verify created host (including its Zabbix Host Inventory block)
 zbxctl describe host web-prod-01
 zbxctl describe inventory web-prod-01

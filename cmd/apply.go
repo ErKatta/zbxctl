@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -23,9 +24,20 @@ type ManifestItem struct {
 }
 
 var applyCmd = &cobra.Command{
-	Use:   "apply -f <manifest.yaml|manifest.json>",
-	Short: "Declaratively create or update Zabbix resources from manifest files",
-	Long:  `apply reads a JSON or YAML resource manifest file and creates or updates Zabbix resources (hosts, templates, items, triggers).`,
+	Use:   "apply -f <manifest.yaml|manifest.json|->",
+	Short: "Declaratively create or update Zabbix resources from manifest files or stdin",
+	Long: `apply reads a JSON or YAML resource manifest from a file or standard input ('-f -') and creates or updates Zabbix resources (hosts, templates, items, triggers, inventories).
+
+Examples:
+  # Apply a YAML manifest from file
+  zbxctl apply -f host-manifest.yaml
+
+  # Stream manifest from standard input (Unix pipe)
+  cat host-manifest.yaml | zbxctl apply -f -
+
+  # Stream manifest directly from Python subprocess
+  # subprocess.run(["zbxctl", "apply", "-f", "-"], input=manifest_yaml, text=True)
+`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if applyFileFlag == "" {
 			return fmt.Errorf("manifest file path is required (--file / -f)")
@@ -34,7 +46,7 @@ var applyCmd = &cobra.Command{
 		var data []byte
 		var err error
 		if applyFileFlag == "-" {
-			data, err = io.ReadAll(os.Stdin)
+			data, err = io.ReadAll(cmd.InOrStdin())
 			if err != nil {
 				return fmt.Errorf("failed to read manifest from stdin: %w", err)
 			}
@@ -45,25 +57,13 @@ var applyCmd = &cobra.Command{
 			}
 		}
 
-		var items []ManifestItem
-		var single ManifestItem
+		if len(strings.TrimSpace(string(data))) == 0 {
+			return fmt.Errorf("manifest input is empty")
+		}
 
-		// Try unmarshaling as list or single object
-		if err := yaml.Unmarshal(data, &items); err != nil || len(items) == 0 {
-			if err2 := yaml.Unmarshal(data, &single); err2 == nil && (single.Kind != "" || single.Resource != "" || single.Method != "" || len(single.Params) > 0 || len(single.Spec) > 0) {
-				items = []ManifestItem{single}
-			} else {
-				// Fallback: parse raw generic map
-				var genericMap map[string]interface{}
-				if err3 := yaml.Unmarshal(data, &genericMap); err3 == nil {
-					items = []ManifestItem{{
-						Kind:   fmt.Sprintf("%v", genericMap["kind"]),
-						Params: genericMap,
-					}}
-				} else {
-					return fmt.Errorf("failed to parse manifest file: %w", err)
-				}
-			}
+		items, err := parseManifestItems(data)
+		if err != nil {
+			return fmt.Errorf("failed to parse manifest: %w", err)
 		}
 
 		type ApplyResult struct {
@@ -167,8 +167,68 @@ var applyCmd = &cobra.Command{
 	},
 }
 
+func parseManifestItems(data []byte) ([]ManifestItem, error) {
+	var items []ManifestItem
+	dec := yaml.NewDecoder(bytes.NewReader(data))
+
+	for {
+		var docNode yaml.Node
+		err := dec.Decode(&docNode)
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			// Fallback directly to single or array Unmarshal
+			break
+		}
+
+		if docNode.Kind == 0 {
+			continue
+		}
+
+		// 1. Try decoding document as array of ManifestItem
+		var docItems []ManifestItem
+		if err := docNode.Decode(&docItems); err == nil && len(docItems) > 0 {
+			items = append(items, docItems...)
+			continue
+		}
+
+		// 2. Try decoding document as single ManifestItem
+		var single ManifestItem
+		if err := docNode.Decode(&single); err == nil && (single.Kind != "" || single.Resource != "" || single.Method != "" || len(single.Params) > 0 || len(single.Spec) > 0) {
+			items = append(items, single)
+			continue
+		}
+
+		// 3. Fallback: decode document as generic map
+		var genericMap map[string]interface{}
+		if err := docNode.Decode(&genericMap); err == nil && len(genericMap) > 0 {
+			items = append(items, ManifestItem{
+				Kind:   fmt.Sprintf("%v", genericMap["kind"]),
+				Params: genericMap,
+			})
+			continue
+		}
+	}
+
+	if len(items) == 0 {
+		// Fallback to top-level unmarshal
+		var fallbackItems []ManifestItem
+		var fallbackSingle ManifestItem
+		if err := yaml.Unmarshal(data, &fallbackItems); err == nil && len(fallbackItems) > 0 {
+			return fallbackItems, nil
+		}
+		if err := yaml.Unmarshal(data, &fallbackSingle); err == nil && (fallbackSingle.Kind != "" || fallbackSingle.Resource != "" || fallbackSingle.Method != "" || len(fallbackSingle.Params) > 0 || len(fallbackSingle.Spec) > 0) {
+			return []ManifestItem{fallbackSingle}, nil
+		}
+		return nil, fmt.Errorf("no valid manifest objects found in input")
+	}
+
+	return items, nil
+}
+
 func init() {
-	applyCmd.Flags().StringVarP(&applyFileFlag, "file", "f", "", "path to manifest file (.json or .yaml)")
+	applyCmd.Flags().StringVarP(&applyFileFlag, "file", "f", "", "path to manifest file (.json or .yaml), or '-' to read from stdin")
 	_ = applyCmd.MarkFlagRequired("file")
 	RootCmd.AddCommand(applyCmd)
 }
