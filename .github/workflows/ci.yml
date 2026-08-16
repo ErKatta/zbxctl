@@ -37,6 +37,8 @@ jobs:
 
       - name: Run Tests (macOS & Windows)
         if: matrix.os != 'ubuntu-latest'
+        env:
+          CGO_ENABLED: 0
         run: go test -v -coverprofile=coverage.txt -covermode=atomic ./...
 
       - name: Build Binary
