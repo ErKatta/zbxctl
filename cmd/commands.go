@@ -91,6 +91,10 @@ var commandsCmd = &cobra.Command{
 				Description: "Display Zabbix instance connection, version, and sizing statistics",
 			},
 			{
+				Verb:        "version",
+				Description: "Print the zbxctl client version and build metadata",
+			},
+			{
 				Verb:        "raw",
 				Description: "Tier 2 raw JSON-RPC caller for 100% Zabbix 7 API coverage (e.g. proxygroup.get, ha.get)",
 			},

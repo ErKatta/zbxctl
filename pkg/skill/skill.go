@@ -61,6 +61,9 @@ spec:
 ## Recipes
 
 ` + "```" + `bash
+# Check zbxctl version
+zbxctl version
+
 # Count total configured hosts directly (single integer output)
 zbxctl get host --count
 
