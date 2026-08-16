@@ -195,6 +195,41 @@ func enrichEvents(ctx context.Context, raw json.RawMessage) json.RawMessage {
 	return json.RawMessage(updated)
 }
 
+func enrichInventory(raw json.RawMessage) json.RawMessage {
+	var items []map[string]interface{}
+	if err := json.Unmarshal(raw, &items); err != nil || len(items) == 0 {
+		var single map[string]interface{}
+		if err2 := json.Unmarshal(raw, &single); err2 == nil && len(single) > 0 {
+			if inv, ok := single["inventory"].(map[string]interface{}); ok {
+				for k, v := range inv {
+					if _, exists := single[k]; !exists && v != nil {
+						single[k] = v
+					}
+				}
+			}
+			updated, _ := json.Marshal(single)
+			return json.RawMessage(updated)
+		}
+		return raw
+	}
+
+	for i, it := range items {
+		if inv, ok := it["inventory"].(map[string]interface{}); ok {
+			for k, v := range inv {
+				if _, exists := items[i][k]; !exists && v != nil {
+					items[i][k] = v
+				}
+			}
+		}
+	}
+
+	updated, err := json.Marshal(items)
+	if err != nil {
+		return raw
+	}
+	return json.RawMessage(updated)
+}
+
 func uniqueStrings(input []string) []string {
 	seen := make(map[string]bool)
 	var result []string

@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 
@@ -29,9 +31,18 @@ var applyCmd = &cobra.Command{
 			return fmt.Errorf("manifest file path is required (--file / -f)")
 		}
 
-		data, err := os.ReadFile(applyFileFlag)
-		if err != nil {
-			return fmt.Errorf("failed to read file %s: %w", applyFileFlag, err)
+		var data []byte
+		var err error
+		if applyFileFlag == "-" {
+			data, err = io.ReadAll(os.Stdin)
+			if err != nil {
+				return fmt.Errorf("failed to read manifest from stdin: %w", err)
+			}
+		} else {
+			data, err = os.ReadFile(applyFileFlag)
+			if err != nil {
+				return fmt.Errorf("failed to read file %s: %w", applyFileFlag, err)
+			}
 		}
 
 		var items []ManifestItem
@@ -85,12 +96,50 @@ var applyCmd = &cobra.Command{
 					return fmt.Errorf("failed to resolve resource for manifest item: %w", err)
 				}
 
-				// Check if ID is present in params -> update, else create
-				idVal := params[resInfo.IDProperty]
-				if idVal != nil && fmt.Sprintf("%v", idVal) != "" {
-					method = resInfo.APIPrefix + ".update"
+				if resInfo.Name == "inventory" {
+					method = "host.update"
+					if params["hostid"] == nil || fmt.Sprintf("%v", params["hostid"]) == "" {
+						targetHost := fmt.Sprintf("%v", params["host"])
+						if targetHost == "" || targetHost == "<nil>" {
+							targetHost = fmt.Sprintf("%v", params["name"])
+						}
+						if targetHost != "" && targetHost != "<nil>" {
+							hostRes, err := checkSafetyAndCall(cmd.Context(), "host.get", map[string]interface{}{
+								"output": []string{"hostid"},
+								"filter": map[string]interface{}{"host": targetHost},
+							})
+							var hosts []map[string]interface{}
+							if err == nil {
+								if rawMsg, ok := hostRes.(json.RawMessage); ok {
+									_ = json.Unmarshal(rawMsg, &hosts)
+								}
+							}
+							if len(hosts) == 0 {
+								hostRes, err = checkSafetyAndCall(cmd.Context(), "host.get", map[string]interface{}{
+									"output": []string{"hostid"},
+									"filter": map[string]interface{}{"name": targetHost},
+								})
+								if err == nil {
+									if rawMsg, ok := hostRes.(json.RawMessage); ok {
+										_ = json.Unmarshal(rawMsg, &hosts)
+									}
+								}
+							}
+							if len(hosts) > 0 {
+								if hID, ok := hosts[0]["hostid"].(string); ok {
+									params["hostid"] = hID
+								}
+							}
+						}
+					}
 				} else {
-					method = resInfo.APIPrefix + ".create"
+					// Check if ID is present in params -> update, else create
+					idVal := params[resInfo.IDProperty]
+					if idVal != nil && fmt.Sprintf("%v", idVal) != "" {
+						method = resInfo.APIPrefix + ".update"
+					} else {
+						method = resInfo.APIPrefix + ".create"
+					}
 				}
 			}
 

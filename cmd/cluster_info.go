@@ -59,7 +59,7 @@ func parseCountResult(raw interface{}) int {
 
 var clusterInfoCmd = &cobra.Command{
 	Use:     "cluster-info",
-	Aliases: []string{"clusterinfo", "inventory", "info", "overview"},
+	Aliases: []string{"clusterinfo", "info", "overview", "sizing", "stats"},
 	Short:   "Display Zabbix instance connection, version, and sizing statistics",
 	Long:    `cluster-info performs a read-only probe of the connected Zabbix 7 instance, gathering host counts, active problem counts, item totals, and system context.`,
 	RunE: func(cmd *cobra.Command, args []string) error {

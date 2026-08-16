@@ -622,5 +622,51 @@ func TestPrintResourceSchemas(t *testing.T) {
 			t.Errorf("expected nonexistent column error message, got: %v", err)
 		}
 	})
+
+	t.Run("inventory standard schema with mode formatting", func(t *testing.T) {
+		var buf bytes.Buffer
+		f := &Formatter{Format: "table", Writer: &buf}
+
+		data := []map[string]interface{}{
+			{
+				"hostid":         "10001",
+				"host":           "Zabbix server",
+				"name":           "Zabbix server",
+				"inventory_mode": "1",
+				"type":           "Server",
+				"vendor":         "Zabbix",
+				"model":          "Zabbix-Appliance",
+				"macaddress_a":   "52:54:00:12:34:56",
+				"os":             "Linux",
+			},
+			{
+				"hostid":         "10002",
+				"host":           "web-prod-01",
+				"name":           "web-prod-01",
+				"inventory_mode": "0",
+				"type":           "Web Server",
+				"vendor":         "Dell",
+				"model":          "PowerEdge R740",
+				"macaddress_a":   "00:1A:2B:3C:4D:5E",
+				"os":             "Ubuntu 24.04",
+			},
+		}
+
+		err := f.PrintResource(data, "inventory", nil, false)
+		if err != nil {
+			t.Fatalf("failed to print inventory resource table: %v", err)
+		}
+		out := buf.String()
+
+		expectedHeaders := []string{"HOSTID", "HOST", "NAME", "MODE", "TYPE", "VENDOR", "MODEL", "MAC", "OS"}
+		for _, h := range expectedHeaders {
+			if !strings.Contains(out, h) {
+				t.Errorf("expected header %q in inventory table output:\n%s", h, out)
+			}
+		}
+		if !strings.Contains(out, "Dell") || !strings.Contains(out, "PowerEdge R740") {
+			t.Errorf("expected Dell and PowerEdge R740 in inventory table output:\n%s", out)
+		}
+	})
 }
 

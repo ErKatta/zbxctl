@@ -56,7 +56,7 @@ spec:
 ## Domain Disambiguation: Hosts vs. Inventory vs. Sizing
 - **Configured Monitoring Hosts**: Use ` + "`" + `zbxctl get host` + "`" + ` or ` + "`" + `zbxctl get host --count` + "`" + ` to query all monitoring endpoints.
 - **Instance Sizing / Sizing Overview**: Use ` + "`" + `zbxctl cluster-info` + "`" + ` to get total counts across all object types (hosts, items, triggers, problems).
-- **Zabbix Asset / Hardware Inventory**: Use ` + "`" + `zbxctl describe host <id>` + "`" + ` to inspect the hardware/OS inventory block, or ` + "`" + `zbxctl get host --filter='{"inventory_mode": [0,1]}'` + "`" + ` to filter inventory-enabled hosts.
+- **Zabbix Asset / Hardware Inventory**: Use ` + "`" + `zbxctl get inventory` + "`" + ` (or ` + "`" + `zbxctl get inv` + "`" + `) for dedicated CMDB asset queries, ` + "`" + `zbxctl describe inventory <id>` + "`" + ` or ` + "`" + `zbxctl describe host <id>` + "`" + ` for detailed metadata, and ` + "`" + `zbxctl apply -f inv.yaml` + "`" + ` with ` + "`" + `kind: inventory` + "`" + ` for declarative asset synchronization.
 
 ## Recipes
 
@@ -70,6 +70,11 @@ zbxctl get host --count
 # Sizing overview of entire Zabbix instance
 zbxctl cluster-info
 
+# Query hardware and asset CMDB inventory records
+zbxctl get inventory -o table
+zbxctl get inventory -f hostid,name,vendor,model,macaddress_a -o table
+zbxctl get inv --search="Dell" -o json
+
 # Query resources with projection and alphabetical sorting
 zbxctl get template --fields=templateid,name --sort=name -o table
 zbxctl get host --search="prod" --sort=name -o table
@@ -81,11 +86,14 @@ zbxctl get template --export -o yaml
 # Dry-run diff against live Zabbix server
 zbxctl diff -f host-manifest.yaml
 
-# Apply declarative spec
+# Apply declarative spec (via file or stdin)
 zbxctl apply -f host-manifest.yaml
+zbxctl apply -f inv-manifest.yaml
+cat inv-manifest.yaml | zbxctl apply -f -
 
 # Verify created host (including its Zabbix Host Inventory block)
 zbxctl describe host web-prod-01
+zbxctl describe inventory web-prod-01
 ` + "```" + `
 `,
 	},

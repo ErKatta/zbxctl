@@ -107,6 +107,23 @@ func formatHostStatusCol(val interface{}, row map[string]interface{}) string {
 	return str
 }
 
+func formatInventoryModeCol(val interface{}, row map[string]interface{}) string {
+	if val == nil {
+		return "-"
+	}
+	str := strings.TrimSpace(fmt.Sprintf("%v", val))
+	if str == "0" || strings.EqualFold(str, "manual") {
+		return color.GreenString("Manual")
+	}
+	if str == "1" || strings.EqualFold(str, "automatic") || strings.EqualFold(str, "auto") {
+		return color.CyanString("Automatic")
+	}
+	if str == "-1" || strings.EqualFold(str, "disabled") {
+		return color.HiBlackString("Disabled")
+	}
+	return str
+}
+
 func formatItemStatusCol(val interface{}, row map[string]interface{}) string {
 	if val == nil {
 		return ""
@@ -217,7 +234,8 @@ func formatPrivateCol(val interface{}, row map[string]interface{}) string {
 
 // KnownResourceAttributes lists known standard field attributes for each resource type.
 var KnownResourceAttributes = map[string][]string{
-	"host":        {"hostid", "host", "name", "status", "description", "proxy_hostid", "ip", "dns", "port", "available", "error", "tls_connect", "tls_accept"},
+	"host":        {"hostid", "host", "name", "status", "description", "proxy_hostid", "ip", "dns", "port", "available", "error", "tls_connect", "tls_accept", "inventory_mode"},
+	"inventory":   {"hostid", "host", "name", "inventory_mode", "type", "type_full", "vendor", "model", "hardware", "macaddress_a", "macaddress_b", "serialno_a", "serialno_b", "tag", "asset_tag", "os", "os_full", "os_short", "location", "location_lat", "location_lon", "poc_1_name", "poc_1_email", "poc_1_phone_a", "poc_1_cell", "poc_1_notes", "notes", "chassis", "deployment_status", "date_hw_purchase", "date_hw_install", "date_hw_expiry", "date_hw_decomm", "site_rack", "site_notes", "host_networks", "alias"},
 	"template":    {"templateid", "name", "host", "description", "uuid", "vendor_name", "vendor_version"},
 	"problem":     {"eventid", "source", "object", "objectid", "clock", "ns", "r_eventid", "r_clock", "r_ns", "correlationid", "userid", "name", "acknowledged", "severity", "cause_eventid", "opdata", "suppressed", "status", "host", "hostname", "age"},
 	"item":        {"itemid", "type", "snmp_oid", "hostid", "name", "key_", "delay", "history", "trends", "status", "value_type", "trapper_hosts", "units", "description", "lastvalue", "prevvalue", "lastclock", "error", "host"},
@@ -249,6 +267,17 @@ var ResourceSchemas = map[string][]ColumnDefinition{
 		{Header: "NAME", Keys: []string{"name"}},
 		{Header: "STATUS", Keys: []string{"status"}, Formatter: formatHostStatusCol},
 		{Header: "AVAILABILITY", Keys: []string{"available", "availability"}, Formatter: formatAvailabilityCol},
+	},
+	"inventory": {
+		{Header: "HOSTID", Keys: []string{"hostid"}},
+		{Header: "HOST", Keys: []string{"host"}},
+		{Header: "NAME", Keys: []string{"name"}},
+		{Header: "MODE", Keys: []string{"inventory_mode"}, Formatter: formatInventoryModeCol},
+		{Header: "TYPE", Keys: []string{"type"}},
+		{Header: "VENDOR", Keys: []string{"vendor"}},
+		{Header: "MODEL", Keys: []string{"model", "hardware"}},
+		{Header: "MAC", Keys: []string{"macaddress_a", "macaddress"}},
+		{Header: "OS", Keys: []string{"os", "os_full"}},
 	},
 	"item": {
 		{Header: "ITEMID", Keys: []string{"itemid"}},

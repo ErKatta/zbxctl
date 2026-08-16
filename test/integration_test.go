@@ -143,12 +143,12 @@ func TestZabbixIntegrationTestcontainers(t *testing.T) {
 		}
 	})
 
-	t.Run("zbxctl inventory alias against Testcontainer", func(t *testing.T) {
+	t.Run("zbxctl get inventory against Testcontainer", func(t *testing.T) {
 		root := cmd.RootCmd
 		cmd.ResetCommandFlags(root)
-		root.SetArgs([]string{"--config", cfgPath, "inventory"})
+		root.SetArgs([]string{"--config", cfgPath, "get", "inventory"})
 		if err := root.Execute(); err != nil {
-			t.Fatalf("inventory alias failed against Testcontainer: %v", err)
+			t.Fatalf("get inventory failed against Testcontainer: %v", err)
 		}
 	})
 

@@ -23,11 +23,12 @@ var describeCmd = &cobra.Command{
 		params := map[string]interface{}{
 			"output": "extend",
 		}
-		if resInfo.Name == "host" {
+		if resInfo.Name == "host" || resInfo.Name == "inventory" {
 			params["selectTags"] = "extend"
 			params["selectInterfaces"] = "extend"
 			params["selectGroups"] = "extend"
 			params["selectParentTemplates"] = "extend"
+			params["selectInventory"] = "extend"
 			params["selectItems"] = "count"
 			params["selectTriggers"] = "count"
 		}

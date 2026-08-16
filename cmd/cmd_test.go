@@ -148,14 +148,195 @@ func TestCLICommands(t *testing.T) {
 		}
 	})
 
-	// 3b. Test zbxctl inventory alias
-	t.Run("inventory alias", func(t *testing.T) {
+	// 3b. Test zbxctl cluster-info aliases
+	t.Run("cluster-info aliases", func(t *testing.T) {
+		for _, alias := range []string{"info", "overview", "sizing", "stats", "clusterinfo"} {
+			cmd := RootCmd
+			ResetCommandFlags(cmd)
+			cmd.SetArgs([]string{"--config", cfgPath, alias})
+
+			if err := cmd.Execute(); err != nil {
+				t.Fatalf("cluster-info alias %q failed: %v", alias, err)
+			}
+		}
+	})
+
+	// 3c. Test zbxctl get inventory (table, json, yaml, toon, and field projection)
+	t.Run("get inventory table schema and data", func(t *testing.T) {
 		cmd := RootCmd
 		ResetCommandFlags(cmd)
-		cmd.SetArgs([]string{"--config", cfgPath, "inventory"})
+		buf := new(bytes.Buffer)
+		cmd.SetOut(buf)
+		cmd.SetArgs([]string{"--config", cfgPath, "-o", "table", "get", "inventory"})
 
 		if err := cmd.Execute(); err != nil {
-			t.Fatalf("inventory alias failed: %v", err)
+			t.Fatalf("get inventory table failed: %v", err)
+		}
+
+		out := buf.String()
+		expectedCols := []string{"HOSTID", "HOST", "NAME", "MODE", "TYPE", "VENDOR", "MODEL", "MAC", "OS"}
+		for _, col := range expectedCols {
+			if !strings.Contains(out, col) {
+				t.Errorf("expected column %q in get inventory output:\n%s", col, out)
+			}
+		}
+		if !strings.Contains(out, "Dell") || !strings.Contains(out, "PowerEdge R740") {
+			t.Errorf("expected inventory data (Dell PowerEdge R740) in output:\n%s", out)
+		}
+	})
+
+	t.Run("get inventory aliases inv and host-inventory", func(t *testing.T) {
+		for _, alias := range []string{"inv", "host-inventory"} {
+			cmd := RootCmd
+			ResetCommandFlags(cmd)
+			buf := new(bytes.Buffer)
+			cmd.SetOut(buf)
+			cmd.SetArgs([]string{"--config", cfgPath, "-o", "json", "get", alias})
+
+			if err := cmd.Execute(); err != nil {
+				t.Fatalf("get %s failed: %v", alias, err)
+			}
+			out := buf.String()
+			if !strings.Contains(out, `"vendor": "Dell"`) {
+				t.Errorf("expected vendor Dell in %s output:\n%s", alias, out)
+			}
+		}
+	})
+
+	t.Run("get inventory with custom fields projection", func(t *testing.T) {
+		cmd := RootCmd
+		ResetCommandFlags(cmd)
+		buf := new(bytes.Buffer)
+		cmd.SetOut(buf)
+		cmd.SetArgs([]string{"--config", cfgPath, "-o", "table", "get", "inventory", "-f", "hostid,name,vendor,model"})
+
+		if err := cmd.Execute(); err != nil {
+			t.Fatalf("get inventory with custom fields failed: %v", err)
+		}
+		out := buf.String()
+		if !strings.Contains(out, "HOSTID") || !strings.Contains(out, "VENDOR") || !strings.Contains(out, "MODEL") {
+			t.Errorf("expected HOSTID, VENDOR, MODEL columns, got:\n%s", out)
+		}
+	})
+
+	t.Run("get inventory single host by id", func(t *testing.T) {
+		cmd := RootCmd
+		ResetCommandFlags(cmd)
+		buf := new(bytes.Buffer)
+		cmd.SetOut(buf)
+		cmd.SetArgs([]string{"--config", cfgPath, "-o", "json", "get", "inventory", "10002"})
+
+		if err := cmd.Execute(); err != nil {
+			t.Fatalf("get inventory 10002 failed: %v", err)
+		}
+		out := buf.String()
+		if !strings.Contains(out, `"vendor": "Dell"`) {
+			t.Errorf("expected vendor Dell in get inventory 10002 output, got:\n%s", out)
+		}
+	})
+
+	t.Run("describe host includes inventory block", func(t *testing.T) {
+		cmd := RootCmd
+		ResetCommandFlags(cmd)
+		buf := new(bytes.Buffer)
+		cmd.SetOut(buf)
+		cmd.SetArgs([]string{"--config", cfgPath, "-o", "json", "describe", "host", "10002"})
+
+		if err := cmd.Execute(); err != nil {
+			t.Fatalf("describe host 10002 failed: %v", err)
+		}
+		out := buf.String()
+		if !strings.Contains(out, `"inventory"`) || !strings.Contains(out, `"vendor": "Dell"`) {
+			t.Errorf("expected inventory block in describe host output, got:\n%s", out)
+		}
+	})
+
+	t.Run("describe inventory 10002", func(t *testing.T) {
+		cmd := RootCmd
+		ResetCommandFlags(cmd)
+		buf := new(bytes.Buffer)
+		cmd.SetOut(buf)
+		cmd.SetArgs([]string{"--config", cfgPath, "-o", "json", "describe", "inventory", "10002"})
+
+		if err := cmd.Execute(); err != nil {
+			t.Fatalf("describe inventory 10002 failed: %v", err)
+		}
+		out := buf.String()
+		if !strings.Contains(out, `"vendor": "Dell"`) {
+			t.Errorf("expected vendor Dell in describe inventory output, got:\n%s", out)
+		}
+	})
+
+	t.Run("query inventory with search", func(t *testing.T) {
+		cmd := RootCmd
+		ResetCommandFlags(cmd)
+		buf := new(bytes.Buffer)
+		cmd.SetOut(buf)
+		cmd.SetArgs([]string{"--config", cfgPath, "-o", "json", "query", "inventory", "--search=Dell"})
+
+		if err := cmd.Execute(); err != nil {
+			t.Fatalf("query inventory failed: %v", err)
+		}
+	})
+
+	t.Run("apply kind inventory declarative manifest", func(t *testing.T) {
+		cmd := RootCmd
+		ResetCommandFlags(cmd)
+
+		invManifest := `kind: inventory
+spec:
+  hostid: "10002"
+  inventory_mode: 0
+  vendor: "Dell"
+  model: "PowerEdge R740"
+  macaddress_a: "00:1A:2B:3C:4D:5E"
+`
+		manifestFile := filepath.Join(tempDir, "inv_manifest.yaml")
+		if err := os.WriteFile(manifestFile, []byte(invManifest), 0644); err != nil {
+			t.Fatalf("failed to write inv_manifest: %v", err)
+		}
+
+		buf := new(bytes.Buffer)
+		cmd.SetOut(buf)
+		cmd.SetArgs([]string{"--config", cfgPath, "--context=rw-context", "apply", "-f", manifestFile, "-o", "json"})
+
+		if err := cmd.Execute(); err != nil {
+			t.Fatalf("apply kind inventory failed: %v", err)
+		}
+		out := buf.String()
+		if !strings.Contains(out, `"action": "updated"`) {
+			t.Errorf("expected action updated in apply output, got:\n%s", out)
+		}
+	})
+
+	t.Run("apply kind inventory via stdin", func(t *testing.T) {
+		cmd := RootCmd
+		ResetCommandFlags(cmd)
+
+		invManifest := `kind: inventory
+spec:
+  host: "web-prod-01"
+  mode: manual
+  vendor: "Dell"
+  model: "PowerEdge R740"
+`
+		oldStdin := os.Stdin
+		r, w, _ := os.Pipe()
+		os.Stdin = r
+		w.WriteString(invManifest)
+		w.Close()
+		defer func() { os.Stdin = oldStdin }()
+
+		buf := new(bytes.Buffer)
+		cmd.SetOut(buf)
+		cmd.SetArgs([]string{"--config", cfgPath, "--context=rw-context", "apply", "-f", "-", "-o", "json"})
+
+		if err := cmd.Execute(); err != nil {
+			t.Fatalf("apply kind inventory via stdin failed: %v", err)
+		}
+		out := buf.String()
+		if !strings.Contains(out, `"action": "updated"`) {
+			t.Errorf("expected action updated in apply stdin output, got:\n%s", out)
 		}
 	})
 
