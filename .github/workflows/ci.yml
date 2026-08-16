@@ -45,4 +45,6 @@ jobs:
         run: go test -v -coverprofile=coverage.txt -covermode=atomic ./...
 
       - name: Build Binary
+        env:
+          CGO_ENABLED: 0
         run: go build -v -o zbxctl main.go
