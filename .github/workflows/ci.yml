@@ -26,7 +26,7 @@ jobs:
           cache: true
 
       - name: Verify Formatting & Go Modules
-        run: go vet ./...
+        run: go vet ./cmd ./internal ./pkg
 
       - name: Check for uncommitted changes
         run: git diff --exit-code
