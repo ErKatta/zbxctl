@@ -237,8 +237,19 @@ func (f *Formatter) printTableWithOptions(data interface{}, opts PrintOptions) e
 }
 
 func (f *Formatter) printSingleTable(data interface{}) error {
-	m, ok := data.(map[string]interface{})
-	if !ok {
+	var m map[string]interface{}
+	if mapData, ok := data.(map[string]interface{}); ok {
+		m = mapData
+	} else if data != nil {
+		val := reflect.ValueOf(data)
+		if val.Kind() == reflect.Struct || (val.Kind() == reflect.Ptr && val.Elem().Kind() == reflect.Struct) {
+			b, err := json.Marshal(data)
+			if err == nil {
+				_ = json.Unmarshal(b, &m)
+			}
+		}
+	}
+	if m == nil {
 		return f.printJSON(data)
 	}
 

@@ -87,8 +87,8 @@ var commandsCmd = &cobra.Command{
 				Description: "Run connectivity and health diagnostics",
 			},
 			{
-				Verb:        "inventory",
-				Description: "Probe Zabbix instance grounding statistics",
+				Verb:        "cluster-info",
+				Description: "Display Zabbix instance connection, version, and sizing statistics",
 			},
 			{
 				Verb:        "raw",

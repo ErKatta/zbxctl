@@ -28,7 +28,7 @@
 
 ## Key Features
 
-- **Tiered Command Architecture:** High-frequency ergonomic verbs (`get`, `describe`, `apply`, `delete`, `query`, `exec`, `wait`, `diff`, `doctor`, `inventory`) paired with a Tier 2 Universal Raw JSON-RPC engine (`zbxctl raw`).
+- **Tiered Command Architecture:** High-frequency ergonomic verbs (`get`, `describe`, `apply`, `delete`, `query`, `exec`, `wait`, `diff`, `doctor`, `cluster-info`) paired with a Tier 2 Universal Raw JSON-RPC engine (`zbxctl raw`).
 - **Client-Side Safety Middleware:** Prevents accidental production outages with granular safety enforcement (`readonly`, `readwrite-mine`, `readwrite-all`, `dangerously-unrestricted`).
 - **Credential Redaction:** Automatic redaction of sensitive API tokens, passwords, and HTTP headers in terminal/JSON output to keep credentials out of LLM contexts and logs.
 - **LLM Native Context Loading:** Compact self-discovery tree (`zbxctl commands --brief`) and Token-Optimized Object Notation (`-o toon`) to optimize prompt token usage.
@@ -167,7 +167,7 @@ Every API call passes through client-side safety middleware enforced by the acti
 
 | Safety Level | Permitted Operations | Blocked Operations |
 | :--- | :--- | :--- |
-| `readonly` | Read-only operations (`*.get`, `describe`, `query`, `doctor`, `inventory`) | Any mutation (`*.create`, `*.update`, `*.delete`, `exec`) |
+| `readonly` | Read-only operations (`*.get`, `describe`, `query`, `doctor`, `cluster-info`, `commands`) | Any mutation (`*.create`, `*.update`, `*.delete`, `exec`) |
 | `readwrite-mine` | Read-only + mutations on resources tagged `zbxctl=true` or `managed-by=zbxctl` | Un-tagged or instance-wide destructive edits |
 | `readwrite-all` | Full API mutations | Destructive bulk deletes without explicit `--force` |
 | `dangerously-unrestricted` | All operations enabled without safety checks | None |
@@ -176,12 +176,12 @@ When a safety violation occurs, `zbxctl` emits a structured JSON error envelope 
 
 ```json
 {
- "error": {
- "code": "SAFETY_LEVEL_VIOLATION",
- "method": "host.delete",
- "message": "Operation blocked by safety-level 'readonly' on context 'prod'.",
- "resolution": "Switch context or update safety-level in ~/.zbxctl/config.yaml."
- }
+  "error": {
+    "code": "SAFETY_LEVEL_VIOLATION",
+    "method": "host.delete",
+    "message": "Operation blocked by safety-level 'readonly' on context 'prod'.",
+    "resolution": "Switch context or update safety-level in ~/.zbxctl/config.yaml."
+  }
 }
 ```
 
@@ -191,6 +191,14 @@ When a safety violation occurs, `zbxctl` emits a structured JSON error envelope 
 
 ### Tier 1 Ergonomic Commands
 ```bash
+# Cluster & instance sizing overview (hosts, problems, items, triggers)
+zbxctl cluster-info
+
+# Count resources directly (low-token output)
+zbxctl get host --count
+zbxctl get problem --count
+zbxctl get item --host="Zabbix server" --count
+
 # List hosts or filter problems
 zbxctl get host
 zbxctl get problem --filter='{"severity": 4}' -o json

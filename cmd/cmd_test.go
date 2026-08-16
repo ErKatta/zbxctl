@@ -79,19 +79,38 @@ func TestCLICommands(t *testing.T) {
 		}
 	})
 
-	// 3. Test zbxctl inventory
-	t.Run("inventory", func(t *testing.T) {
+	// 3. Test zbxctl cluster-info
+	t.Run("cluster-info", func(t *testing.T) {
 		cmd := RootCmd
+		ResetCommandFlags(cmd)
+		buf := new(bytes.Buffer)
+		cmd.SetOut(buf)
+		cmd.SetArgs([]string{"--config", cfgPath, "cluster-info", "-o", "json"})
+
+		if err := cmd.Execute(); err != nil {
+			t.Fatalf("cluster-info failed: %v", err)
+		}
+		out := buf.String()
+		if !strings.Contains(out, `"total_hosts": 2`) {
+			t.Errorf("expected total_hosts: 2 in cluster-info output, got:\n%s", out)
+		}
+	})
+
+	// 3b. Test zbxctl inventory alias
+	t.Run("inventory alias", func(t *testing.T) {
+		cmd := RootCmd
+		ResetCommandFlags(cmd)
 		cmd.SetArgs([]string{"--config", cfgPath, "inventory"})
 
 		if err := cmd.Execute(); err != nil {
-			t.Fatalf("inventory failed: %v", err)
+			t.Fatalf("inventory alias failed: %v", err)
 		}
 	})
 
 	// 4. Test zbxctl get host
 	t.Run("get host", func(t *testing.T) {
 		cmd := RootCmd
+		ResetCommandFlags(cmd)
 		cmd.SetArgs([]string{"--config", cfgPath, "get", "host"})
 
 		if err := cmd.Execute(); err != nil {
@@ -99,8 +118,43 @@ func TestCLICommands(t *testing.T) {
 		}
 	})
 
+	// 4a. Test zbxctl get host --count
+	t.Run("get host --count", func(t *testing.T) {
+		cmd := RootCmd
+		ResetCommandFlags(cmd)
+		buf := new(bytes.Buffer)
+		cmd.SetOut(buf)
+		cmd.SetArgs([]string{"--config", cfgPath, "-o", "table", "get", "host", "--count"})
+
+		if err := cmd.Execute(); err != nil {
+			t.Fatalf("get host --count failed: %v", err)
+		}
+		out := strings.TrimSpace(buf.String())
+		if out != "2" {
+			t.Errorf("expected count output '2', got: %q", out)
+		}
+	})
+
+	// 4a2. Test zbxctl get host --count -o json
+	t.Run("get host --count -o json", func(t *testing.T) {
+		cmd := RootCmd
+		ResetCommandFlags(cmd)
+		buf := new(bytes.Buffer)
+		cmd.SetOut(buf)
+		cmd.SetArgs([]string{"--config", cfgPath, "-o", "json", "get", "host", "--count"})
+
+		if err := cmd.Execute(); err != nil {
+			t.Fatalf("get host --count -o json failed: %v", err)
+		}
+		out := buf.String()
+		if !strings.Contains(out, `"count": 2`) {
+			t.Errorf("expected count JSON output with count: 2, got: %q", out)
+		}
+	})
+
 	// 4b. Test zbxctl get problems (table schema, host enrichment, deterministic columns)
 	t.Run("get problems table schema and host enrichment", func(t *testing.T) {
+		ResetCommandFlags(RootCmd)
 		cmd := RootCmd
 		buf := new(bytes.Buffer)
 		cmd.SetOut(buf)
@@ -128,6 +182,7 @@ func TestCLICommands(t *testing.T) {
 
 	// 4c. Test zbxctl get problems with filter (verifying columns do not change)
 	t.Run("get problems with filter preserves standard columns", func(t *testing.T) {
+		ResetCommandFlags(RootCmd)
 		cmd := RootCmd
 		buf := new(bytes.Buffer)
 		cmd.SetOut(buf)
@@ -148,6 +203,7 @@ func TestCLICommands(t *testing.T) {
 
 	// 4d. Test zbxctl get problems with custom --fields
 	t.Run("get problems with custom fields", func(t *testing.T) {
+		ResetCommandFlags(RootCmd)
 		cmd := RootCmd
 		buf := new(bytes.Buffer)
 		cmd.SetOut(buf)

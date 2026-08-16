@@ -134,11 +134,21 @@ func TestZabbixIntegrationTestcontainers(t *testing.T) {
 		}
 	})
 
-	t.Run("zbxctl inventory against Testcontainer", func(t *testing.T) {
+	t.Run("zbxctl cluster-info against Testcontainer", func(t *testing.T) {
 		root := cmd.RootCmd
+		cmd.ResetCommandFlags(root)
+		root.SetArgs([]string{"--config", cfgPath, "cluster-info"})
+		if err := root.Execute(); err != nil {
+			t.Fatalf("cluster-info failed against Testcontainer: %v", err)
+		}
+	})
+
+	t.Run("zbxctl inventory alias against Testcontainer", func(t *testing.T) {
+		root := cmd.RootCmd
+		cmd.ResetCommandFlags(root)
 		root.SetArgs([]string{"--config", cfgPath, "inventory"})
 		if err := root.Execute(); err != nil {
-			t.Fatalf("inventory failed against Testcontainer: %v", err)
+			t.Fatalf("inventory alias failed against Testcontainer: %v", err)
 		}
 	})
 

@@ -53,9 +53,20 @@ spec:
       value: production
 ` + "```" + `
 
+## Domain Disambiguation: Hosts vs. Inventory vs. Sizing
+- **Configured Monitoring Hosts**: Use ` + "`" + `zbxctl get host` + "`" + ` or ` + "`" + `zbxctl get host --count` + "`" + ` to query all monitoring endpoints.
+- **Instance Sizing / Sizing Overview**: Use ` + "`" + `zbxctl cluster-info` + "`" + ` to get total counts across all object types (hosts, items, triggers, problems).
+- **Zabbix Asset / Hardware Inventory**: Use ` + "`" + `zbxctl describe host <id>` + "`" + ` to inspect the hardware/OS inventory block, or ` + "`" + `zbxctl get host --filter='{"inventory_mode": [0,1]}'` + "`" + ` to filter inventory-enabled hosts.
+
 ## Recipes
 
 ` + "```" + `bash
+# Count total configured hosts directly (single integer output)
+zbxctl get host --count
+
+# Sizing overview of entire Zabbix instance
+zbxctl cluster-info
+
 # Query resources with projection and alphabetical sorting
 zbxctl get template --fields=templateid,name --sort=name -o table
 zbxctl get host --search="prod" --sort=name -o table
@@ -70,7 +81,7 @@ zbxctl diff -f host-manifest.yaml
 # Apply declarative spec
 zbxctl apply -f host-manifest.yaml
 
-# Verify created host
+# Verify created host (including its Zabbix Host Inventory block)
 zbxctl describe host web-prod-01
 ` + "```" + `
 `,
@@ -89,8 +100,8 @@ Use this skill when investigating active alerts, high-severity problems, or agen
 
 ## Diagnostic Flow
 
-1. **System Health Check**: Run ` + "`" + `zbxctl doctor` + "`" + ` to confirm API connectivity, authentication, and context safety.
-2. **Problem Discovery**: Query active high-severity problems with ` + "`" + `zbxctl get problem --filter='{"severity": 4}' --sort=severity --sort-order=desc -o json` + "`" + `.
+1. **System Health & Sizing Check**: Run ` + "`" + `zbxctl doctor` + "`" + ` and ` + "`" + `zbxctl cluster-info` + "`" + ` to confirm API connectivity, authentication, and instance state.
+2. **Problem Discovery**: Query active problem counts with ` + "`" + `zbxctl get problem --count` + "`" + ` and list details with ` + "`" + `zbxctl get problem --filter='{"severity": 4}' --sort=severity --sort-order=desc -o json` + "`" + `.
 3. **Host Metadata Inspection**: Inspect target host configurations using ` + "`" + `zbxctl describe host <host_id_or_name>` + "`" + `.
 4. **Metric Telemetry Analysis**: Retrieve numerical history for problem items using ` + "`" + `zbxctl get metric <item_id> --since=4h` + "`" + `.
 5. **Resolution Polling**: Wait for problem resolution using ` + "`" + `zbxctl wait problem <event_id> --for=resolved --timeout=60s` + "`" + `.
@@ -100,6 +111,9 @@ Use this skill when investigating active alerts, high-severity problems, or agen
 ` + "```" + `bash
 # Run connectivity diagnostic
 zbxctl doctor
+
+# Count active problems
+zbxctl get problem --count
 
 # List high severity active problems sorted by severity
 zbxctl get problem --filter='{"severity": 4}' --sort=severity --sort-order=desc -o json

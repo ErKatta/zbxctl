@@ -8,7 +8,7 @@
 
 | Level | Allowed Operations | Blocked Operations | Typical Use Case |
 | :--- | :--- | :--- | :--- |
-| `readonly` | Read-only verbs (`get`, `describe`, `query`, `doctor`, `inventory`, `*.get`) | Any mutation (`*.create`, `*.update`, `*.delete`, `exec`) | Default mode for AI agents & production inspection |
+| `readonly` | Read-only verbs (`get`, `describe`, `query`, `doctor`, `cluster-info`, `commands`, `*.get`) | Any mutation (`*.create`, `*.update`, `*.delete`, `exec`) | Default mode for AI agents & production inspection |
 | `readwrite-mine` | Read-only + mutations on resources tagged `zbxctl=true` | Un-tagged or instance-wide infrastructure edits | Managed dev/test resources |
 | `readwrite-all` | Full Zabbix API mutations | Bulk deletes without explicit `--force` | Admin operations & platform automation |
 | `dangerously-unrestricted` | All API calls enabled without safety checks | None | Expert automated pipelines |
