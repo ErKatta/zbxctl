@@ -975,5 +975,21 @@ spec:
 				t.Errorf("expected syntax error message, got: %v", err)
 			}
 		})
+
+		// 10h. Edit with windows line endings flag (cancellation)
+		t.Run("edit host with windows line endings", func(t *testing.T) {
+			cmd := RootCmd
+			ResetCommandFlags(cmd)
+			buf := new(bytes.Buffer)
+			cmd.SetOut(buf)
+			cmd.SetArgs([]string{"--config", cfgPath, "--context=rw-context", "edit", "host", "10001", "--windows-line-endings", "--editor", noopEditor})
+
+			if err := cmd.Execute(); err != nil {
+				t.Fatalf("edit host with windows line endings failed: %v", err)
+			}
+			if !strings.Contains(buf.String(), "Edit cancelled, no changes made.") {
+				t.Errorf("expected cancellation message with windows line endings, got: %s", buf.String())
+			}
+		})
 	})
 }

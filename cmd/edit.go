@@ -375,12 +375,13 @@ Editor Resolution Order:
 
 func stripYamlComments(data []byte) []byte {
 	var out []string
-	for _, line := range strings.Split(string(data), "\n") {
+	normalized := strings.ReplaceAll(string(data), "\r\n", "\n")
+	for _, line := range strings.Split(normalized, "\n") {
 		trimmed := strings.TrimSpace(line)
 		if strings.HasPrefix(trimmed, "#") {
 			continue
 		}
-		out = append(out, line)
+		out = append(out, strings.TrimRight(line, "\r"))
 	}
 	return []byte(strings.Join(out, "\n"))
 }
