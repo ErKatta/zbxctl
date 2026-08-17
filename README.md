@@ -259,7 +259,7 @@ zbxctl wait problem 12345 --for=resolved --timeout=60s
 zbxctl raw proxygroup.get --params='{"output": "extend"}' -o json
 zbxctl raw history.push --params='[{"itemid": 10001, "value": "42.0"}]' -o json
 zbxctl raw ha.get --params='{}' -o json
-### Version & Diagnostics
+### Version, Self-Update & Diagnostics
 ```bash
 # Print client version, build commit, date, and platform
 zbxctl version
@@ -269,6 +269,12 @@ zbxctl version -o json
 
 # Print only the version string
 zbxctl version --short
+
+# Check if a newer version of zbxctl is available
+zbxctl update --check
+
+# Self-update zbxctl binary in-place to the latest GitHub release
+zbxctl update
 
 # Run connectivity and health diagnostics against target Zabbix instance
 zbxctl doctor
