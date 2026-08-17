@@ -853,7 +853,7 @@ func main() {
 			ResetCommandFlags(cmd)
 			buf := new(bytes.Buffer)
 			cmd.SetOut(buf)
-			cmd.SetArgs([]string{"--config", cfgPath, "edit", "host", "10001", "--editor", noopEditor})
+			cmd.SetArgs([]string{"--config", cfgPath, "--context=rw-context", "edit", "host", "10001", "--editor", noopEditor})
 
 			if err := cmd.Execute(); err != nil {
 				t.Fatalf("edit host failed: %v", err)
@@ -888,7 +888,7 @@ func main() {
 			ResetCommandFlags(cmd)
 			buf := new(bytes.Buffer)
 			cmd.SetOut(buf)
-			cmd.SetArgs([]string{"--config", cfgPath, "edit", "host", "10001"})
+			cmd.SetArgs([]string{"--config", cfgPath, "--context=rw-context", "edit", "host", "10001"})
 
 			if err := cmd.Execute(); err != nil {
 				t.Fatalf("edit with ZBX_EDITOR failed: %v", err)
