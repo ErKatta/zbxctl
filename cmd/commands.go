@@ -100,6 +100,14 @@ var commandsCmd = &cobra.Command{
 				Description: "Print the zbxctl client version and build metadata",
 			},
 			{
+				Verb:        "update",
+				Description: "Check for releases and self-update zbxctl binary in-place",
+			},
+			{
+				Verb:        "skill",
+				Description: "Manage packaged AI agent skills (install, list, show, export)",
+			},
+			{
 				Verb:        "raw",
 				Description: "Tier 2 raw JSON-RPC caller for 100% Zabbix 7 API coverage (e.g. proxygroup.get, ha.get)",
 			},

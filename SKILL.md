@@ -112,10 +112,14 @@ zbxctl commands --brief
 # 2. Check zbxctl CLI client version & build metadata
 zbxctl version
 
-# 3. Probe target Zabbix instance for sizing & stats (version, total hosts, active problems, items, triggers)
+# 3. Check for or install zbxctl binary updates
+zbxctl update --check
+zbxctl update
+
+# 4. Probe target Zabbix instance for sizing & stats (version, total hosts, active problems, items, triggers)
 zbxctl cluster-info
 
-# 4. Diagnose connectivity, credentials, and context safety
+# 5. Diagnose connectivity, credentials, and context safety
 zbxctl doctor
 ```
 
