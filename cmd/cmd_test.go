@@ -3,7 +3,9 @@ package cmd
 import (
 	"bytes"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 
@@ -803,15 +805,47 @@ spec:
 
 	// 10. Test zbxctl edit command
 	t.Run("edit commands", func(t *testing.T) {
-		noopEditor := filepath.Join(tempDir, "noop-editor.sh")
-		if err := os.WriteFile(noopEditor, []byte("#!/bin/sh\nexit 0\n"), 0755); err != nil {
-			t.Fatalf("failed to create noop editor: %v", err)
+		mockEditorSrc := `package main
+
+import (
+	"bytes"
+	"os"
+)
+
+func main() {
+	if len(os.Args) < 2 {
+		return
+	}
+	targetFile := os.Args[len(os.Args)-1]
+	for _, arg := range os.Args[1:] {
+		if arg == "--modify" {
+			data, err := os.ReadFile(targetFile)
+			if err == nil {
+				data = bytes.ReplaceAll(data, []byte("Zabbix server"), []byte("Modified Server"))
+				_ = os.WriteFile(targetFile, data, 0644)
+			}
+			return
+		}
+	}
+}
+`
+		mockEditorGo := filepath.Join(tempDir, "mock_editor.go")
+		if err := os.WriteFile(mockEditorGo, []byte(mockEditorSrc), 0644); err != nil {
+			t.Fatalf("failed to write mock editor source: %v", err)
 		}
 
-		modifyEditor := filepath.Join(tempDir, "modify-editor.sh")
-		if err := os.WriteFile(modifyEditor, []byte("#!/bin/sh\nsed -i 's/Zabbix server/Modified Server/g' \"$1\"\nexit 0\n"), 0755); err != nil {
-			t.Fatalf("failed to create modify editor: %v", err)
+		mockEditorBin := filepath.Join(tempDir, "mock-editor")
+		if runtime.GOOS == "windows" {
+			mockEditorBin += ".exe"
 		}
+
+		buildCmd := exec.Command("go", "build", "-o", mockEditorBin, mockEditorGo)
+		if out, err := buildCmd.CombinedOutput(); err != nil {
+			t.Fatalf("failed to compile mock editor: %v, output: %s", err, string(out))
+		}
+
+		noopEditor := mockEditorBin
+		modifyEditor := mockEditorBin + " --modify"
 
 		// 10a. Edit with no changes (cancelled)
 		t.Run("edit host no changes", func(t *testing.T) {
