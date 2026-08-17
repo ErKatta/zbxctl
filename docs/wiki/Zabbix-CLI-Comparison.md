@@ -26,7 +26,7 @@ Both tools serve the Zabbix ecosystem by replacing web GUI navigation with comma
 | :--- | :--- | :--- |
 | **Language & Distribution** | Python (`pip install zabbix-cli`) | Go (Single static binary, zero runtime dependencies) |
 | **Primary Interaction Mode** | Interactive REPL shell (`zabbix-cli>`) + CLI commands | Standard POSIX shell command execution (`bash`, `zsh`, `ci`) |
-| **Command Paradigms** | Custom admin commands (`show_hosts`, `create_host`) | Tier 1 Ergonomic Verbs (`get`, `describe`, `apply`, `delete`, `query`, `diff`, `wait`, `exec`) + Tier 2 Raw Engine (`raw`) |
+| **Command Paradigms** | Custom admin commands (`show_hosts`, `create_host`) | Tier 1 Ergonomic Verbs (`get`, `describe`, `edit`, `apply`, `delete`, `query`, `diff`, `wait`, `exec`) + Tier 2 Raw Engine (`raw`) |
 | **Zabbix API Coverage** | Curated high-frequency admin endpoints | 100% Zabbix 7 API coverage (Tier 1 verbs + Tier 2 `raw <method>`) |
 | **Multi-Instance Management** | Profile files in configuration | Native context switching (`zbxctl config use-context <name>`) |
 | **Output Formats** | Plain text tables, formatted lists | `json`, `table`, `toon` (Token-Optimized Object Notation), `yaml` |

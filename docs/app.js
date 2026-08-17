@@ -57,12 +57,18 @@ const commandsData = [
  desc: "Advanced search and metric key filtering across items.",
  example: "zbxctl query item --search='key_=system.cpu' --limit=5"
  },
- {
- name: "zbxctl apply -f manifest.yaml",
- category: "tier1",
- desc: "Declaratively create or update Zabbix resources from YAML/JSON manifests.",
- example: "zbxctl apply -f host-manifest.yaml"
- },
+  {
+    name: "zbxctl edit host",
+    category: "tier1",
+    desc: "Fetch and edit a live resource directly in your text editor, applying changes upon save (kubectl edit style).",
+    example: "zbxctl edit host web-prod-01"
+  },
+  {
+    name: "zbxctl apply -f manifest.yaml",
+    category: "tier1",
+    desc: "Declaratively create or update Zabbix resources from YAML/JSON manifests.",
+    example: "zbxctl apply -f host-manifest.yaml"
+  },
  {
  name: "zbxctl diff -f manifest.yaml",
  category: "tier1",

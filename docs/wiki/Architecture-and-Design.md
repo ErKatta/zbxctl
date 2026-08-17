@@ -30,6 +30,7 @@ Tier 1 verbs provide standard Unix/cloud CLI operations:
  - `zbxctl get metric <item_id> --since=4h`: Fetch historical telemetry samples over a duration window.
  - `zbxctl get item --host=<name|id> --fields=itemid,name,description`: Filter items by target host and select specific output fields.
 - `zbxctl describe <resource> <id>`: Fetch detailed, formatted resource metadata.
+- `zbxctl edit <resource> <id>`: Fetch live resource and edit directly in preferred text editor with automatic apply on exit (kubectl edit workflow).
 - `zbxctl apply -f manifest.yaml`: Declaratively create or update Zabbix resources.
 - `zbxctl diff -f manifest.yaml`: Live dry-run diff against target instance state.
 - `zbxctl wait <resource> <id>`: Synchronously poll until a target condition (e.g. problem resolution) is met.
