@@ -3,7 +3,9 @@ package cmd
 import (
 	"bytes"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 
@@ -799,5 +801,195 @@ spec:
 		if err := cmd.Execute(); err != nil {
 			t.Fatalf("skill install failed: %v", err)
 		}
+	})
+
+	// 10. Test zbxctl edit command
+	t.Run("edit commands", func(t *testing.T) {
+		mockEditorSrc := `package main
+
+import (
+	"bytes"
+	"os"
+)
+
+func main() {
+	if len(os.Args) < 2 {
+		return
+	}
+	targetFile := os.Args[len(os.Args)-1]
+	for _, arg := range os.Args[1:] {
+		if arg == "--modify" {
+			data, err := os.ReadFile(targetFile)
+			if err == nil {
+				data = bytes.ReplaceAll(data, []byte("Zabbix server"), []byte("Modified Server"))
+				_ = os.WriteFile(targetFile, data, 0644)
+			}
+			return
+		}
+	}
+}
+`
+		mockEditorGo := filepath.Join(tempDir, "mock_editor.go")
+		if err := os.WriteFile(mockEditorGo, []byte(mockEditorSrc), 0644); err != nil {
+			t.Fatalf("failed to write mock editor source: %v", err)
+		}
+
+		mockEditorBin := filepath.Join(tempDir, "mock-editor")
+		if runtime.GOOS == "windows" {
+			mockEditorBin += ".exe"
+		}
+
+		buildCmd := exec.Command("go", "build", "-o", mockEditorBin, mockEditorGo)
+		if out, err := buildCmd.CombinedOutput(); err != nil {
+			t.Fatalf("failed to compile mock editor: %v, output: %s", err, string(out))
+		}
+
+		noopEditor := mockEditorBin
+		modifyEditor := mockEditorBin + " --modify"
+
+		// 10a. Edit with no changes (cancelled)
+		t.Run("edit host no changes", func(t *testing.T) {
+			cmd := RootCmd
+			ResetCommandFlags(cmd)
+			buf := new(bytes.Buffer)
+			cmd.SetOut(buf)
+			cmd.SetArgs([]string{"--config", cfgPath, "--context=rw-context", "edit", "host", "10001", "--editor", noopEditor})
+
+			if err := cmd.Execute(); err != nil {
+				t.Fatalf("edit host failed: %v", err)
+			}
+			if !strings.Contains(buf.String(), "Edit cancelled, no changes made.") {
+				t.Errorf("expected cancellation message, got: %s", buf.String())
+			}
+		})
+
+		// 10b. Edit with slash syntax (RESOURCE/NAME) and modifications applied
+		t.Run("edit host/id with modifications", func(t *testing.T) {
+			cmd := RootCmd
+			ResetCommandFlags(cmd)
+			buf := new(bytes.Buffer)
+			cmd.SetOut(buf)
+			cmd.SetArgs([]string{"--config", cfgPath, "--context=rw-context", "edit", "host/10001", "--editor", modifyEditor})
+
+			if err := cmd.Execute(); err != nil {
+				t.Fatalf("edit host/10001 failed: %v", err)
+			}
+			if !strings.Contains(buf.String(), `host "Zabbix server" edited`) {
+				t.Errorf("expected success message, got: %s", buf.String())
+			}
+		})
+
+		// 10c. Edit with ZBX_EDITOR environment variable
+		t.Run("edit with ZBX_EDITOR env", func(t *testing.T) {
+			_ = os.Setenv("ZBX_EDITOR", noopEditor)
+			defer os.Unsetenv("ZBX_EDITOR")
+
+			cmd := RootCmd
+			ResetCommandFlags(cmd)
+			buf := new(bytes.Buffer)
+			cmd.SetOut(buf)
+			cmd.SetArgs([]string{"--config", cfgPath, "--context=rw-context", "edit", "host", "10001"})
+
+			if err := cmd.Execute(); err != nil {
+				t.Fatalf("edit with ZBX_EDITOR failed: %v", err)
+			}
+			if !strings.Contains(buf.String(), "Edit cancelled, no changes made.") {
+				t.Errorf("expected cancellation message, got: %s", buf.String())
+			}
+		})
+
+		// 10d. Edit with -f manifest file
+		t.Run("edit -f manifest file", func(t *testing.T) {
+			manifestPath := filepath.Join(tempDir, "edit-manifest.yaml")
+			manifestContent := `kind: host
+spec:
+  hostid: "10001"
+  host: "Zabbix server"
+  name: "Zabbix server"
+`
+			if err := os.WriteFile(manifestPath, []byte(manifestContent), 0644); err != nil {
+				t.Fatalf("failed to write test manifest: %v", err)
+			}
+
+			cmd := RootCmd
+			ResetCommandFlags(cmd)
+			buf := new(bytes.Buffer)
+			cmd.SetOut(buf)
+			cmd.SetArgs([]string{"--config", cfgPath, "--context=rw-context", "edit", "-f", manifestPath, "--editor", modifyEditor})
+
+			if err := cmd.Execute(); err != nil {
+				t.Fatalf("edit -f failed: %v", err)
+			}
+			if !strings.Contains(buf.String(), "edited") {
+				t.Errorf("expected edited message, got: %s", buf.String())
+			}
+
+			// Verify file was updated on disk
+			updatedData, _ := os.ReadFile(manifestPath)
+			if !strings.Contains(string(updatedData), "Modified Server") {
+				t.Errorf("expected manifest on disk to be updated, got: %s", string(updatedData))
+			}
+		})
+
+		// 10e. Safety check on readonly context
+		t.Run("edit safety violation on readonly context", func(t *testing.T) {
+			cmd := RootCmd
+			ResetCommandFlags(cmd)
+			cmd.SetArgs([]string{"--config", cfgPath, "--context=mock-context", "edit", "host", "10001", "--editor", modifyEditor})
+
+			err := cmd.Execute()
+			if err == nil {
+				t.Fatalf("expected safety error on readonly context, got nil")
+			}
+			if !strings.Contains(err.Error(), "blocked by safety-level 'readonly'") {
+				t.Errorf("expected safety violation message, got: %v", err)
+			}
+		})
+
+		// 10f. Edit nonexistent resource
+		t.Run("edit nonexistent resource", func(t *testing.T) {
+			cmd := RootCmd
+			ResetCommandFlags(cmd)
+			cmd.SetArgs([]string{"--config", cfgPath, "edit", "host", "99999", "--editor", noopEditor})
+
+			err := cmd.Execute()
+			if err == nil {
+				t.Fatalf("expected error for nonexistent host, got nil")
+			}
+			if !strings.Contains(err.Error(), "not found") {
+				t.Errorf("expected 'not found' error, got: %v", err)
+			}
+		})
+
+		// 10g. Edit invalid arguments
+		t.Run("edit invalid arguments", func(t *testing.T) {
+			cmd := RootCmd
+			ResetCommandFlags(cmd)
+			cmd.SetArgs([]string{"--config", cfgPath, "edit", "invalid-single-arg"})
+
+			err := cmd.Execute()
+			if err == nil {
+				t.Fatalf("expected error for invalid single positional argument, got nil")
+			}
+			if !strings.Contains(err.Error(), "RESOURCE/NAME") {
+				t.Errorf("expected syntax error message, got: %v", err)
+			}
+		})
+
+		// 10h. Edit with windows line endings flag (cancellation)
+		t.Run("edit host with windows line endings", func(t *testing.T) {
+			cmd := RootCmd
+			ResetCommandFlags(cmd)
+			buf := new(bytes.Buffer)
+			cmd.SetOut(buf)
+			cmd.SetArgs([]string{"--config", cfgPath, "--context=rw-context", "edit", "host", "10001", "--windows-line-endings", "--editor", noopEditor})
+
+			if err := cmd.Execute(); err != nil {
+				t.Fatalf("edit host with windows line endings failed: %v", err)
+			}
+			if !strings.Contains(buf.String(), "Edit cancelled, no changes made.") {
+				t.Errorf("expected cancellation message with windows line endings, got: %s", buf.String())
+			}
+		})
 	})
 }

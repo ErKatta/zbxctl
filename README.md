@@ -28,7 +28,7 @@
 
 ## Key Features
 
-- **Tiered Command Architecture:** High-frequency ergonomic verbs (`get`, `describe`, `apply`, `delete`, `query`, `exec`, `wait`, `diff`, `doctor`, `cluster-info`) paired with a Tier 2 Universal Raw JSON-RPC engine (`zbxctl raw`).
+- **Tiered Command Architecture:** High-frequency ergonomic verbs (`get`, `describe`, `edit`, `apply`, `delete`, `query`, `exec`, `wait`, `diff`, `doctor`, `cluster-info`) paired with a Tier 2 Universal Raw JSON-RPC engine (`zbxctl raw`).
 - **Client-Side Safety Middleware:** Prevents accidental production outages with granular safety enforcement (`readonly`, `readwrite-mine`, `readwrite-all`, `dangerously-unrestricted`).
 - **Credential Redaction:** Automatic redaction of sensitive API tokens, passwords, and HTTP headers in terminal/JSON output to keep credentials out of LLM contexts and logs.
 - **LLM Native Context Loading:** Compact self-discovery tree (`zbxctl commands --brief`) and Token-Optimized Object Notation (`-o toon`) to optimize prompt token usage.
@@ -224,6 +224,12 @@ zbxctl get inv --search="Dell" -o json
 # Advanced query search
 zbxctl query item --search="key_=system.cpu" --limit=5
 zbxctl query inventory --search="Linux" --sort=name
+
+# Interactive resource editing in default text editor (kubectl edit style)
+zbxctl edit host web-prod-01
+zbxctl edit host/10001
+zbxctl edit template 40001
+zbxctl edit -f host-manifest.yaml
 
 # Declarative creation/update from YAML/JSON manifest (or stdin)
 zbxctl apply -f host-manifest.yaml

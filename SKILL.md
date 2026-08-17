@@ -7,7 +7,7 @@ description: Zabbix 7 CLI and Automation Engine for AI Agents and Systems Engine
 
 `zbxctl` is a high-performance command-line tool for interacting with Zabbix 7.0+ LTS monitoring systems.
 It provides a **Tiered Command Architecture**:
-1. **Tier 1 Ergonomic Commands:** High-frequency verb-noun operations (`get`, `describe`, `apply`, `delete`, `query`, `exec`, `wait`, `diff`, `doctor`, `cluster-info`).
+1. **Tier 1 Ergonomic Commands:** High-frequency verb-noun operations (`get`, `describe`, `edit`, `apply`, `delete`, `query`, `exec`, `wait`, `diff`, `doctor`, `cluster-info`).
 2. **Tier 2 Universal Raw Engine:** `zbxctl raw <zabbix.method> [--params='<json>']` providing 100% Zabbix 7 API coverage with full client-side safety middleware enforcement.
 
 ---
@@ -174,6 +174,12 @@ zbxctl get problem --filter='{"severity": 4}' --sort=severity --sort-order=desc 
 zbxctl describe host 10001
 zbxctl describe inventory 10001
 
+# Interactive resource editing in default text editor (kubectl edit approach)
+zbxctl edit host web-prod-01
+zbxctl edit host/10001
+zbxctl edit template 40001
+zbxctl edit -f host-manifest.yaml
+
 # Declarative creation/update from manifest or stdin (-f -)
 zbxctl apply -f host-manifest.yaml
 zbxctl apply -f inv-manifest.yaml
@@ -205,7 +211,7 @@ zbxctl wait problem 12345 --for=resolved --timeout=60s
 
 ## 5. Tier 2 Universal Raw API Engine (100% Zabbix 7 API Coverage)
 
-> **Rule for AI Agents:** Always prioritize Tier 1 standard verbs (`zbxctl get`, `zbxctl describe`, `zbxctl query`, `zbxctl apply`, `zbxctl delete`) for all monitoring resources and asset inventories. Do NOT use `zbxctl raw host.get` or `zbxctl raw host.update` for inventory tasks. Use `zbxctl raw` **only as a last resort** for unmapped API namespaces (e.g. `connector.*`, `ha.*`, `proxygroup.*`, `valuemap.*`, `task.create`).
+> **Rule for AI Agents:** Always prioritize Tier 1 standard verbs (`zbxctl get`, `zbxctl describe`, `zbxctl edit`, `zbxctl query`, `zbxctl apply`, `zbxctl delete`) for all monitoring resources and asset inventories. Do NOT use `zbxctl raw host.get` or `zbxctl raw host.update` for inventory tasks. Use `zbxctl raw` **only as a last resort** for unmapped API namespaces (e.g. `connector.*`, `ha.*`, `proxygroup.*`, `valuemap.*`, `task.create`).
 
 Invoke *any* Zabbix 7 JSON-RPC API endpoint with safety middleware filtering applied:
 

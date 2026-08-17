@@ -61,6 +61,11 @@ var commandsCmd = &cobra.Command{
 				Resources:   resources,
 			},
 			{
+				Verb:        "edit",
+				Description: "Edit a live resource directly in your preferred text editor",
+				Resources:   resources,
+			},
+			{
 				Verb:        "delete",
 				Description: "Remove target resources by ID",
 				Resources:   resources,

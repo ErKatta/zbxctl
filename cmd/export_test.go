@@ -35,6 +35,7 @@ func TestGetDeclarativeWorkflow(t *testing.T) {
 	}
 
 	t.Run("get template -o yaml outputs declarative manifest directly", func(t *testing.T) {
+		ResetCommandFlags(RootCmd)
 		var buf bytes.Buffer
 		cmd := RootCmd
 		cmd.SetOut(&buf)

@@ -39,6 +39,9 @@ zbxctl get problem --filter='{"severity": 4}' -o json
 # Fetch metric telemetry for the last 4 hours
 zbxctl get metric 23253 --since=4h -o table
 
+# Interactive live resource editing (kubectl edit style)
+zbxctl edit host web-prod-01
+
 # Declarative resource manifest apply
 zbxctl apply -f host-manifest.yaml
 
