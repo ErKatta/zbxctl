@@ -483,7 +483,7 @@ function selectSafety(level, btn) {
 
     <div class="safety-error-section">
       <div class="safety-error-header">
-        <span>⚠️ EXIT CODE 2 &bull; SAFETY VIOLATION ENVELOPE</span>
+        <span>EXIT CODE 2 &bull; SAFETY VIOLATION ENVELOPE</span>
         <button type="button" class="copy-btn mini-copy-btn" aria-label="Copy error envelope" onclick="copyText('${escapeHtml(data.sampleError).replace(/'/g, "\\'")}', this)">Copy</button>
       </div>
       <pre tabindex="0" class="safety-error-pre" aria-label="Violation error envelope"><code>${escapeHtml(data.sampleError)}</code></pre>
@@ -541,7 +541,7 @@ function selectScenario(scenarioKey, btn) {
   const tokenBadge = document.getElementById('sim-token-savings');
 
   if (tokenBadge) {
-    tokenBadge.innerHTML = `⚡ ${escapeHtml(data.tokenSavings)}`;
+    tokenBadge.textContent = data.tokenSavings;
   }
 
   if (container) {
@@ -549,7 +549,7 @@ function selectScenario(scenarioKey, btn) {
       <!-- User Turn -->
       <div class="chat-row user-turn">
         <div class="chat-author-bar">
-          <span class="chat-avatar-badge avatar-user" aria-hidden="true">👤</span>
+          <span class="chat-avatar-badge avatar-user" aria-hidden="true">DEV</span>
           <span class="chat-author-name">Developer / SRE</span>
         </div>
         <div class="chat-bubble-user">${escapeHtml(data.userPrompt)}</div>
@@ -558,13 +558,13 @@ function selectScenario(scenarioKey, btn) {
       <!-- Agent Turn -->
       <div class="chat-row agent-turn">
         <div class="chat-author-bar">
-          <span class="chat-avatar-badge avatar-agent" aria-hidden="true">🤖</span>
+          <span class="chat-avatar-badge avatar-agent" aria-hidden="true">AI</span>
           <span class="chat-author-name">AI Coding Assistant</span>
           <span class="skill-badge">${escapeHtml(data.badge)}</span>
         </div>
 
         <div class="chat-thought-box">
-          <strong>💭 Thought:</strong> ${escapeHtml(data.thought1)}
+          <strong>Thought:</strong> ${escapeHtml(data.thought1)}
         </div>
 
         <!-- Tool Call 1 -->
@@ -581,7 +581,7 @@ function selectScenario(scenarioKey, btn) {
 
         ${data.thought2 ? `
         <div class="chat-thought-box">
-          <strong>💭 Thought:</strong> ${escapeHtml(data.thought2)}
+          <strong>Thought:</strong> ${escapeHtml(data.thought2)}
         </div>
         ` : ''}
 

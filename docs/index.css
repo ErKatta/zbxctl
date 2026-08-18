@@ -638,7 +638,6 @@ pre[tabindex="0"]:focus-visible {
 .os-icon {
   width: 44px;
   height: 44px;
-  font-size: 1.6rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -646,8 +645,14 @@ pre[tabindex="0"]:focus-visible {
   border: 1px solid var(--border-color);
   border-radius: 10px;
   flex-shrink: 0;
-  line-height: 1;
-  text-align: center;
+  color: var(--zabbix-navy);
+  transition: all 0.2s ease;
+}
+
+.install-card:hover .os-icon {
+  background: #FFFFFF;
+  border-color: var(--zabbix-blue);
+  color: var(--zabbix-blue);
 }
 
 .install-os-info h3 {
@@ -1802,23 +1807,28 @@ pre[tabindex="0"]:focus-visible {
 }
 
 .chat-avatar-badge {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border-radius: 6px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.95rem;
   flex-shrink: 0;
+  letter-spacing: 0.04em;
 }
 
 .avatar-user {
   background: #E2E8F0;
+  color: #334155;
+  border: 1px solid #CBD5E1;
 }
 
 .avatar-agent {
-  background: linear-gradient(135deg, #2563EB, #1D4ED8);
-  color: #FFFFFF;
+  background: #EFF6FF;
+  color: var(--zabbix-blue);
+  border: 1px solid #BFDBFE;
 }
 
 .chat-author-name {
