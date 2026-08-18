@@ -119,16 +119,50 @@
                         <div class="terminal-line">
                             <span class="prompt" aria-hidden="true">$</span> zbxctl skill install --all
                         </div>
-                        <pre class="terminal-output" tabindex="0" aria-label="AI skills installation output"><code class="json">[OK] Installed 4 built-in agent skills to ~/.gemini/config/skills:
-  ✓ zabbix-automation     (Declarative GitOps, apply &amp; diff)
-  ✓ zabbix-troubleshooting (Incident triage &amp; root cause diagnosis)
-  ✓ zabbix-telemetry       (Metrics extraction &amp; token optimization)
-  ✓ zabbix-safety          (Client-side binary safety guardrails)
-Target AI assistants: Antigravity, Claude Code, Cursor, Copilot.</code></pre>
+                        <pre class="terminal-output" tabindex="0" aria-label="AI skills installation output"><code class="json">[OK] Installed 4 built-in agent skills:
+  ✓ zabbix-automation     (GitOps, apply &amp; diff)
+  ✓ zabbix-troubleshooting (Incident triage &amp; root cause)
+  ✓ zabbix-telemetry       (Metrics &amp; token optimization)
+  ✓ zabbix-safety          (Client-side safety guardrails)</code></pre>
                         <div class="terminal-line">
-                            <span class="prompt" aria-hidden="true">$</span> zbxctl get problem --host=prod-api-01 -o toon
+                            <span class="prompt" aria-hidden="true">$</span> zbxctl get problem --filter='{"severity": 4}'
                         </div>
-                        <pre class="terminal-output" tabindex="0" aria-label="TOON output format"><code class="json">[{"eventid":"20419","host":"prod-api-01","problem":"CPU > 95%","severity":4,"age":"38m"}]</code></pre>
+                        <div class="terminal-table-wrapper" tabindex="0" role="region" aria-label="Problem list table">
+                            <table class="terminal-table">
+                                <caption class="sr-only">Active problems fetched from Zabbix</caption>
+                                <thead>
+                                    <tr class="table-head">
+                                        <th scope="col">EVENTID</th>
+                                        <th scope="col">HOST</th>
+                                        <th scope="col">PROBLEM</th>
+                                        <th scope="col">SEVERITY</th>
+                                        <th scope="col">STATUS</th>
+                                        <th scope="col">AGE</th>
+                                        <th scope="col">ACK</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>10492</td>
+                                        <td class="host-name">web-prod-01</td>
+                                        <td class="prob-name">High CPU utilization (&gt; 95%)</td>
+                                        <td class="sev-high">4 (High)</td>
+                                        <td><span class="status-badge">PROBLEM</span></td>
+                                        <td>12m</td>
+                                        <td class="ack-no">No</td>
+                                    </tr>
+                                    <tr>
+                                        <td>10501</td>
+                                        <td class="host-name">db-primary</td>
+                                        <td class="prob-name">PostgreSQL replication lag &gt; 15s</td>
+                                        <td class="sev-high">4 (High)</td>
+                                        <td><span class="status-badge">PROBLEM</span></td>
+                                        <td>48m</td>
+                                        <td class="ack-no">No</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -456,10 +456,13 @@ pre[tabindex="0"]:focus-visible {
   background: #111520;
   padding: 0.75rem;
   border-radius: 6px;
-  margin-bottom: 1rem;
+  margin-bottom: 0.85rem;
   color: #34D399;
-  overflow-x: auto;
   font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .terminal-output .key { color: #60A5FA; }
@@ -476,18 +479,18 @@ pre[tabindex="0"]:focus-visible {
 .terminal-table {
   width: 100%;
   border-collapse: collapse;
-  padding: 0.5rem 0.65rem;
-  font-size: 0.75rem;
-  min-width: 520px;
+  padding: 0.4rem 0.5rem;
+  font-size: 0.72rem;
   color: #E5E7EB;
   text-align: left;
 }
 
 .terminal-table th,
 .terminal-table td {
-  padding: 0.4rem 0.5rem;
+  padding: 0.35rem 0.45rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   vertical-align: middle;
+  white-space: nowrap;
 }
 
 .terminal-table th {
