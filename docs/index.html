@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>zbxctl - Open Source Zabbix 7 CLI & Automation Engine</title>
+    <title>zbxctl - Open Source Zabbix CLI &amp; AI Agent Companion</title>
     <meta name="description"
-        content="An open-source, developer-first Zabbix 7 CLI inspired by dtctl and kubectl. Designed to transition from MCP to native CLI execution and speed up automation workflow development.">
+        content="An open-source, developer-first Zabbix CLI and AI agent companion. Transition from MCP to native CLI tool execution with 90%+ token savings and client-side safety guardrails.">
     <meta name="keywords"
         content="zabbix, zbxctl, zabbix cli, dtctl, kubectl, mcp, devops, monitoring, golang, apache 2.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,621 +18,830 @@
 </head>
 
 <body>
-    <!-- Background Glow FX -->
-    <div class="bg-glow bg-glow-1"></div>
-    <div class="bg-glow bg-glow-2"></div>
+    <!-- Skip to Main Content (WCAG 2.4.1) -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
 
-    <!-- Navigation -->
-    <header class="navbar">
+    <!-- Background Glow FX (Decorative) -->
+    <div class="bg-glow bg-glow-1" aria-hidden="true"></div>
+    <div class="bg-glow bg-glow-2" aria-hidden="true"></div>
+
+    <!-- Navigation Header -->
+    <header class="navbar" role="banner">
         <div class="nav-container">
-            <a href="#" class="nav-brand">
-                <img src="zbxctl_logo.png" alt="zbxctl logo" class="brand-logo-img">
+            <a href="#" class="nav-brand" aria-label="zbxctl homepage">
+                <img src="zbxctl_logo.png" alt="zbxctl logo" class="brand-logo-img" width="34" height="34">
                 <span class="brand-name">zbxctl</span>
-                <span id="version-badge" class="brand-badge">Latest</span>
+                <span id="version-badge" class="brand-badge" aria-label="Latest release version">Latest</span>
             </a>
-            <nav class="nav-links">
-                <a href="#install">Installation</a>
-                <a href="#about">About</a>
-                <a href="#mcp-vs-cli">MCP vs CLI</a>
-                <a href="#zabbix-cli-comparison">zabbix-cli</a>
-                <a href="#features">Features</a>
-                <a href="#playground">Commands</a>
-                <a href="#safety">Safety</a>
-                <a href="#license">License</a>
+
+            <!-- Mobile Navigation Toggle (Hamburger) -->
+            <button type="button" id="nav-toggle" class="nav-toggle" aria-expanded="false" aria-controls="nav-menu"
+                aria-label="Toggle navigation menu">
+                <span class="hamburger-box" aria-hidden="true">
+                    <span class="hamburger-inner"></span>
+                </span>
+            </button>
+
+            <!-- Navigation Links Menu -->
+            <nav id="nav-menu" class="nav-links" aria-label="Main Navigation">
+                <a href="#mcp-vs-cli" class="nav-link">MCP vs CLI</a>
+                <a href="#agent-simulation" class="nav-link">Agent Demo</a>
+                <a href="#safety" class="nav-link">Safety &amp; Formats</a>
+                <a href="#playground" class="nav-link">Commands</a>
+                <a href="#about" class="nav-link">Comparisons</a>
+                <a href="#quickstart" class="nav-link">Quickstart &amp; Install</a>
+                <div class="nav-mobile-actions">
+                    <a href="https://github.com/ErKatta/zbxctl" target="_blank" rel="noopener noreferrer"
+                        class="btn btn-secondary nav-mobile-btn">
+                        <svg class="github-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"
+                            focusable="false">
+                            <path fill="currentColor"
+                                d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+                        </svg>
+                        GitHub Repository
+                        <span class="sr-only">(opens in new tab)</span>
+                    </a>
+                </div>
             </nav>
+
+            <!-- Desktop Nav Actions -->
             <div class="nav-actions">
-                <a href="https://github.com/ErKatta/zbxctl" target="_blank" class="btn btn-secondary">
-                    <svg class="github-icon" viewBox="0 0 24 24" width="18" height="18">
+                <a href="https://github.com/ErKatta/zbxctl" target="_blank" rel="noopener noreferrer"
+                    class="btn btn-secondary">
+                    <svg class="github-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"
+                        focusable="false">
                         <path fill="currentColor"
                             d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
                     </svg>
                     GitHub Repository
+                    <span class="sr-only">(opens in new tab)</span>
                 </a>
             </div>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-container">
-            <div class="hero-content">
-                <h1 class="hero-title">
-                    Open Source Zabbix CLI & <span class="gradient-text">Automation Engine</span>
-                </h1>
-                <p class="hero-description">
-                    A developer-first CLI for Zabbix 7.0+ LTS. Built to transition from Model Context Protocol
-                    (MCP) daemons to direct shell execution, accelerating automation workflow development for engineers
-                    and AI pair programmers.
-                </p>
-                <div class="hero-cta">
-                    <a href="#install" class="btn btn-primary">Download Binaries (Linux, macOS, Windows) &darr;</a>
-                    <a href="https://github.com/ErKatta/zbxctl/releases/latest" target="_blank"
-                        class="btn btn-secondary">GitHub Releases &rarr;</a>
+    <!-- Main Landmark Container (WCAG 1.3.1) -->
+    <main id="main-content">
+        <!-- Hero Section -->
+        <section id="hero" class="hero" aria-labelledby="hero-heading">
+            <div class="hero-container">
+                <div class="hero-content">
+                    <div class="hero-pill-badge" aria-label="Target audience">
+                        <span>🤖</span> Built for Developers &amp; Autonomous AI Agents
+                    </div>
+                    <h1 id="hero-heading" class="hero-title">
+                        Open Source Zabbix CLI &amp; <span class="gradient-text">AI Agent Companion</span>
+                    </h1>
+                    <p class="hero-description">
+                        A developer-first, LLM-native CLI for Zabbix 7.0+ LTS. Built to transition from Model Context Protocol
+                        (MCP) daemons to direct shell tool execution with <strong>90%+ context token savings</strong> (<code>-o toon</code>),
+                        instant 1-command AI skills setup (<code>zbxctl skill install --all</code>), and client-side safety guardrails.
+                    </p>
+                    <div class="hero-cta">
+                        <a href="#quickstart" class="btn btn-primary">Get Started &amp; Install &darr;</a>
+                        <a href="#agent-simulation" class="btn btn-secondary">
+                            Watch Agent Demo ⚡
+                        </a>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Interactive Terminal Mockup -->
-            <div class="hero-terminal">
-                <div class="terminal-header">
-                    <div class="terminal-dots">
-                        <span class="dot dot-red"></span>
-                        <span class="dot dot-yellow"></span>
-                        <span class="dot dot-green"></span>
-                    </div>
-                    <span class="terminal-title">bash &mdash; zbxctl config current-config</span>
-                </div>
-                <div class="terminal-body">
-                    <div class="terminal-line">
-                        <span class="prompt">$</span> zbxctl config current-config -o json
-                    </div>
-                    <pre class="terminal-output"><code class="json">{
- <span class="key">"name"</span>: <span class="string">"dev-cluster"</span>,
- <span class="key">"info"</span>: {
- <span class="key">"url"</span>: <span class="string">"https://zabbix.internal/api_jsonrpc.php"</span>,
- <span class="key">"api_token"</span>: <span class="string">"[REDACTED]"</span>,
- <span class="key">"safety_level"</span>: <span class="string">"readonly"</span>,
- <span class="key">"output_format"</span>: <span class="string">"json"</span>,
- <span class="key">"timeout"</span>: <span class="number">30</span>
- }
-}</code></pre>
-                    <div class="terminal-line">
-                        <span class="prompt">$</span> zbxctl get problem --filter='{"severity": 4}'
-                    </div>
-                    <div class="terminal-table">
-                        <div class="table-row table-head">
-                            <span>EVENTID</span><span>HOST</span><span>PROBLEM</span><span>SEVERITY</span><span>STATUS</span><span>AGE</span><span>ACK</span>
+                <!-- Interactive Terminal Mockup -->
+                <div class="hero-terminal" role="region" aria-label="Terminal demonstration mockup">
+                    <div class="terminal-header">
+                        <div class="terminal-dots" aria-hidden="true">
+                            <span class="dot dot-red"></span>
+                            <span class="dot dot-yellow"></span>
+                            <span class="dot dot-green"></span>
                         </div>
-                        <div class="table-row">
-                            <span>10492</span><span class="host-name">web-prod-01</span><span class="prob-name">High CPU
-                                utilization (&gt;
-                                95%)</span><span class="sev-high">4 (High)</span><span
-                                class="status-badge">PROBLEM</span><span>12m</span><span class="ack-no">No</span>
+                        <span class="terminal-title">bash &mdash; zbxctl skill install --all</span>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="terminal-line">
+                            <span class="prompt" aria-hidden="true">$</span> zbxctl skill install --all
                         </div>
-                        <div class="table-row">
-                            <span>10501</span><span class="host-name">db-primary</span><span
-                                class="prob-name">PostgreSQL replication lag
-                                &gt; 15s</span><span class="sev-high">4 (High)</span><span
-                                class="status-badge">PROBLEM</span><span>48m</span><span class="ack-no">No</span>
+                        <pre class="terminal-output" tabindex="0" aria-label="AI skills installation output"><code class="json">[OK] Installed 4 built-in agent skills to ~/.gemini/config/skills:
+  ✓ zabbix-automation     (Declarative GitOps, apply &amp; diff)
+  ✓ zabbix-troubleshooting (Incident triage &amp; root cause diagnosis)
+  ✓ zabbix-telemetry       (Metrics extraction &amp; token optimization)
+  ✓ zabbix-safety          (Client-side binary safety guardrails)
+Target AI assistants: Antigravity, Claude Code, Cursor, Copilot.</code></pre>
+                        <div class="terminal-line">
+                            <span class="prompt" aria-hidden="true">$</span> zbxctl get problem --host=prod-api-01 -o toon
                         </div>
+                        <pre class="terminal-output" tabindex="0" aria-label="TOON output format"><code class="json">[{"eventid":"20419","host":"prod-api-01","problem":"CPU > 95%","severity":4,"age":"38m"}]</code></pre>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Installation & Binaries Section -->
-    <section id="install" class="section">
-        <div class="section-container">
-            <div class="section-header">
-                <h2 class="section-title">Zero-Dependency Installation</h2>
-                <p class="section-subtitle">Single cross-compiled static binary with zero external runtime dependencies.
-                    Precompiled for Linux, macOS, and Windows.</p>
-            </div>
-
-            <div class="install-grid">
-                <!-- Linux Card -->
-                <div class="install-card">
-                    <div class="install-card-header">
-                        <div class="install-os-info">
-                            <span class="os-icon">🐧</span>
-                            <div>
-                                <h3>Linux</h3>
-                                <div class="arch-badges">
-                                    <span class="arch-badge">x86_64</span>
-                                    <span class="arch-badge">ARM64</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="install-desc">Works on all Linux distributions (Ubuntu, Debian, RHEL, Alpine, etc.).</p>
-                    <div class="install-cmd-block">
-                        <code
-                            id="cmd-linux">curl -sL https://github.com/ErKatta/zbxctl/releases/download/v0.1.0/zbxctl_0.1.0_linux_amd64.tar.gz | tar -xz &amp;&amp; sudo mv zbxctl /usr/local/bin/</code>
-                        <button class="copy-btn" onclick="copyElementText('cmd-linux', this)">Copy</button>
-                    </div>
-                    <div class="direct-downloads">
-                        <a id="dl-linux-amd64" href="https://github.com/ErKatta/zbxctl/releases/download/v0.1.0/zbxctl_0.1.0_linux_amd64.tar.gz"
-                            class="dl-link">Download Linux x86_64 (.tar.gz)</a>
-                        <a id="dl-linux-arm64" href="https://github.com/ErKatta/zbxctl/releases/download/v0.1.0/zbxctl_0.1.0_linux_arm64.tar.gz"
-                            class="dl-link">Download Linux ARM64 (.tar.gz)</a>
-                    </div>
+        <!-- Why Move from MCP to CLI Section -->
+        <section id="mcp-vs-cli" class="section alt-bg" aria-labelledby="mcp-heading">
+            <div class="section-container">
+                <div class="section-header">
+                    <h2 id="mcp-heading" class="section-title">Why Shift from MCP to the CLI?</h2>
+                    <p class="section-subtitle">Moving from Model Context Protocol (MCP) server daemons to direct shell tool
+                        calls to accelerate automation workflow development</p>
                 </div>
 
-                <!-- macOS Card -->
-                <div class="install-card">
-                    <div class="install-card-header">
-                        <div class="install-os-info">
-                            <span class="os-icon">🍎</span>
-                            <div>
-                                <h3>macOS</h3>
-                                <div class="arch-badges">
-                                    <span class="arch-badge">Apple Silicon (M-Series)</span>
-                                    <span class="arch-badge">Intel</span>
-                                </div>
-                            </div>
+                <div class="mcp-comparison-wrapper">
+                    <div class="mcp-grid">
+                        <div class="mcp-card">
+                            <h3>Lower Context Overhead</h3>
+                            <p>MCP servers require large JSON Schema definitions and verbose RPC envelopes in prompt turns.
+                                <code>zbxctl</code> provides compact, token-efficient outputs (<code>-o toon</code>,
+                                <code>--brief</code>) directly via standard stdout, saving thousands of LLM context tokens.
+                            </p>
                         </div>
-                    </div>
-                    <p class="install-desc">Universal binary for Apple Silicon (M1/M2/M3/M4) and Intel Macs.</p>
-                    <div class="install-cmd-block">
-                        <code
-                            id="cmd-darwin">curl -sL https://github.com/ErKatta/zbxctl/releases/download/v0.1.0/zbxctl_0.1.0_darwin_arm64.tar.gz | tar -xz &amp;&amp; sudo mv zbxctl /usr/local/bin/</code>
-                        <button class="copy-btn" onclick="copyElementText('cmd-darwin', this)">Copy</button>
-                    </div>
-                    <div class="direct-downloads">
-                        <a id="dl-darwin-arm64" href="https://github.com/ErKatta/zbxctl/releases/download/v0.1.0/zbxctl_0.1.0_darwin_arm64.tar.gz"
-                            class="dl-link">Download Apple Silicon (.tar.gz)</a>
-                        <a id="dl-darwin-amd64" href="https://github.com/ErKatta/zbxctl/releases/download/v0.1.0/zbxctl_0.1.0_darwin_amd64.tar.gz"
-                            class="dl-link">Download Intel (.tar.gz)</a>
-                    </div>
-                </div>
 
-                <!-- Windows Card -->
-                <div class="install-card">
-                    <div class="install-card-header">
-                        <div class="install-os-info">
-                            <span class="os-icon">🪟</span>
-                            <div>
-                                <h3>Windows</h3>
-                                <div class="arch-badges">
-                                    <span class="arch-badge">x86_64</span>
-                                </div>
-                            </div>
+                        <div class="mcp-card">
+                            <h3>Universal Agent &amp; CI/CD Compatibility</h3>
+                            <p>Virtually all AI coding assistants (Gemini, Claude, Cursor, Aider, custom scripts) and CI/CD
+                                runners natively support shell tool execution. A CLI binary works instantly everywhere
+                                without managing separate MCP daemon processes.</p>
                         </div>
-                    </div>
-                    <p class="install-desc">Standalone executable for Windows PowerShell or Command Prompt.</p>
-                    <div class="install-cmd-block">
-                        <code
-                            id="cmd-windows">Invoke-WebRequest -Uri "https://github.com/ErKatta/zbxctl/releases/download/v0.1.0/zbxctl_0.1.0_windows_amd64.zip" -OutFile "zbxctl.zip"; Expand-Archive zbxctl.zip -DestinationPath "$HOME\bin"</code>
-                        <button class="copy-btn" onclick="copyElementText('cmd-windows', this)">Copy</button>
-                    </div>
-                    <div class="direct-downloads">
-                        <a id="dl-windows-amd64" href="https://github.com/ErKatta/zbxctl/releases/download/v0.1.0/zbxctl_0.1.0_windows_amd64.zip"
-                            class="dl-link">Download Windows x86_64 (.zip)</a>
-                    </div>
-                </div>
 
-                <!-- Go Toolchain Card -->
-                <div class="install-card alt-install-card">
-                    <div class="install-card-header">
-                        <div class="install-os-info">
-                            <span class="os-icon">⚡</span>
-                            <div>
-                                <h3>Go Toolchain</h3>
-                                <div class="arch-badges">
-                                    <span class="arch-badge">Go 1.22+</span>
-                                </div>
-                            </div>
+                        <div class="mcp-card">
+                            <h3>Faster Workflow Development</h3>
+                            <p>Accelerate automation development with immediate shell feedback loops. Test queries
+                                interactively, chain commands with standard Unix pipes (<code>| jq</code>), and build
+                                reproducible scripts without writing custom Python or Go API wrappers.</p>
+                        </div>
+
+                        <div class="mcp-card">
+                            <h3>Deterministic Client Guardrails</h3>
+                            <p>Rather than relying on prompt instructions or background server hooks, safety checks run
+                                inside the local binary before making API calls. Configurable levels (<code>readonly</code>,
+                                <code>readwrite-mine</code>) guarantee safe execution.
+                            </p>
                         </div>
                     </div>
-                    <p class="install-desc">For developers with Go installed who prefer compiling from latest module
-                        source.</p>
-                    <div class="install-cmd-block">
-                        <code>go install github.com/ErKatta/zbxctl@latest</code>
-                        <button class="copy-btn"
-                            onclick="copyText('go install github.com/ErKatta/zbxctl@latest', this)">Copy</button>
-                    </div>
-                    <div class="direct-downloads">
-                        <a href="https://github.com/ErKatta/zbxctl/releases" target="_blank"
-                            class="dl-link github-rel-btn">Browse All GitHub Releases &rarr;</a>
+
+                    <!-- MCP vs CLI Comparison Table -->
+                    <div class="mcp-vs-table-container" tabindex="0" role="region"
+                        aria-label="MCP vs CLI comparison table">
+                        <table class="mcp-vs-table">
+                            <caption class="sr-only">Comparison of standard MCP server approach versus zbxctl native CLI</caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Key Dimension</th>
+                                    <th scope="col">Standard MCP Server Approach</th>
+                                    <th scope="col">zbxctl Native CLI Approach</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row"><strong>Context Token Cost</strong></th>
+                                    <td>High (JSON schema definitions &amp; RPC envelopes)</td>
+                                    <td><span class="highlight-accent">Token-Optimized</span> (minimal JSON/TOON output via
+                                        stdout)</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><strong>Agent &amp; Tooling Support</strong></th>
+                                    <td>Requires dedicated MCP client integration</td>
+                                    <td><span class="highlight-accent">Universal</span> (works with any shell-enabled AI
+                                        assistant &amp; CI script)</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><strong>Developer Workflow Speed</strong></th>
+                                    <td>Slower multi-hop daemon RPC debugging</td>
+                                    <td><span class="highlight-accent">Instant</span> (direct command line testing &amp; Unix
+                                        pipes)</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><strong>Deployment Complexity</strong></th>
+                                    <td>Background daemon lifecycle per environment</td>
+                                    <td><span class="highlight-accent">Zero Daemon</span> (single statically compiled Go
+                                        binary)</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><strong>Safety Guardrails</strong></th>
+                                    <td>Varies by server implementation</td>
+                                    <td><span class="highlight-accent">Built-in client-side binary safety middleware</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Project Vision & Inspiration Section -->
-    <section id="about" class="section alt-bg">
-        <div class="section-container">
-            <div class="section-header">
-                <h2 class="section-title">Inspired by kubectl & dtctl</h2>
-                <p class="section-subtitle">Bringing proven cloud-native CLI paradigms and declarative workflow patterns
-                    to Zabbix 7 monitoring</p>
-            </div>
-
-            <div class="inspiration-grid">
-                <div class="inspiration-card">
-                    <div class="inspiration-badge">kubectl Paradigm</div>
-                    <h3>Declarative Operations & Context Switching</h3>
-                    <p>Inspired by <code>kubectl</code>, <code>zbxctl</code> features multi-context switching
-                        (<code>zbxctl config use-context</code>), declarative resource manifests
-                        (<code>zbxctl apply -f manifest.yaml</code>), and live dry-run diffing
-                        (<code>zbxctl diff</code>) for Zabbix configuration management.</p>
+        <!-- Live AI Agent Simulation Section -->
+        <section id="agent-simulation" class="section" aria-labelledby="simulation-heading">
+            <div class="section-container">
+                <div class="section-header">
+                    <h2 id="simulation-heading" class="section-title">Watch an AI Agent Use zbxctl in Real-Time</h2>
+                    <p class="section-subtitle">Experience how modern AI coding assistants leverage zbxctl skills, token-optimized TOON output, and client safety guardrails to diagnose incidents and manage infrastructure</p>
                 </div>
-                <div class="inspiration-card">
-                    <div class="inspiration-badge">dtctl Ergonomics</div>
-                    <h3>Structured Observability Verbs</h3>
-                    <p>Following the design philosophy of Dynatrace's <a href="https://github.com/dynatrace-oss/dtctl" target="_blank" style="color: inherit; text-decoration: underline;"><code>dtctl</code></a> (<a href="https://github.com/dynatrace-oss/dtctl/blob/main/CITATION.cff" target="_blank" style="color: var(--zabbix-blue); font-size: 0.85em;">CITATION.cff</a>), <code>zbxctl</code>
-                        standardizes Zabbix interactions into clean, consistent verbs (<code>get</code>,
-                        <code>describe</code>, <code>query</code>, <code>doctor</code>, <code>cluster-info</code>),
-                        eliminating messy manual API scripts.
+
+                <div class="agent-sim-wrapper">
+                    <div class="sim-header">
+                        <div class="sim-tabs" role="tablist" aria-label="Agent simulation scenarios">
+                            <button type="button" id="tab-sim-incident" class="sim-tab active" role="tab"
+                                aria-selected="true" aria-controls="agent-sim-panel"
+                                onclick="selectScenario('incident', this)">
+                                🔍 Incident Triage &amp; Diagnosis
+                            </button>
+                            <button type="button" id="tab-sim-gitops" class="sim-tab" role="tab"
+                                aria-selected="false" aria-controls="agent-sim-panel"
+                                onclick="selectScenario('gitops', this)">
+                                📦 GitOps Spec Sync
+                            </button>
+                            <button type="button" id="tab-sim-safety" class="sim-tab" role="tab"
+                                aria-selected="false" aria-controls="agent-sim-panel"
+                                onclick="selectScenario('safety', this)">
+                                🛡️ Safety Guardrail Intercept
+                            </button>
+                        </div>
+                        <div id="sim-token-savings" class="sim-token-badge" aria-live="polite">
+                            ⚡ TOON output: 148 tokens vs Raw JSON: 1,640 tokens (91% LLM token reduction)
+                        </div>
+                    </div>
+
+                    <div id="agent-sim-panel" role="tabpanel" aria-labelledby="tab-sim-incident">
+                        <div id="agent-chat-body" class="sim-chat-body">
+                            <!-- Dynamic Content Populated by app.js selectScenario() -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Safety Level Matrix -->
+        <section id="safety" class="section alt-bg" aria-labelledby="safety-heading">
+            <div class="section-container">
+                <div class="section-header">
+                    <h2 id="safety-heading" class="section-title">Client-Side Safety Middleware Matrix</h2>
+                    <p class="section-subtitle">Client-side safety controls to prevent unintended mutations during rapid
+                        automation and AI pair programming</p>
+                </div>
+
+                <div class="safety-interactive">
+                    <div class="safety-selector" role="tablist" aria-label="Safety Level Selectors">
+                        <button type="button" class="safety-option active" role="tab" id="tab-readonly"
+                            aria-selected="true" aria-controls="safety-details" data-level="readonly"
+                            onclick="selectSafety('readonly', this)">
+                            <span class="safety-badge level-readonly">readonly</span>
+                            <span class="safety-opt-desc">Strict read-only safety mode</span>
+                        </button>
+                        <button type="button" class="safety-option" role="tab" id="tab-readwrite-mine"
+                            aria-selected="false" aria-controls="safety-details" data-level="readwrite-mine"
+                            onclick="selectSafety('readwrite-mine', this)">
+                            <span class="safety-badge level-mine">readwrite-mine</span>
+                            <span class="safety-opt-desc">Mutates tagged resources only</span>
+                        </button>
+                        <button type="button" class="safety-option" role="tab" id="tab-readwrite-all"
+                            aria-selected="false" aria-controls="safety-details" data-level="readwrite-all"
+                            onclick="selectSafety('readwrite-all', this)">
+                            <span class="safety-badge level-all">readwrite-all</span>
+                            <span class="safety-opt-desc">Full administrative access</span>
+                        </button>
+                        <button type="button" class="safety-option" role="tab" id="tab-dangerously-unrestricted"
+                            aria-selected="false" aria-controls="safety-details" data-level="dangerously-unrestricted"
+                            onclick="selectSafety('dangerously-unrestricted', this)">
+                            <span class="safety-badge level-danger">dangerously-unrestricted</span>
+                            <span class="safety-opt-desc">Bypasses all safety checks</span>
+                        </button>
+                    </div>
+
+                    <div id="safety-details" class="safety-details" role="tabpanel" aria-labelledby="tab-readonly"
+                        tabindex="0">
+                        <!-- Dynamic safety level content populated via app.js -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Machine Output Formats -->
+        <section id="formats" class="section" aria-labelledby="formats-heading">
+            <div class="section-container">
+                <div class="section-header">
+                    <h2 id="formats-heading" class="section-title">Multi-Format Machine Outputs</h2>
+                    <p class="section-subtitle">Switch seamlessly between human terminal tables and token-efficient formats
                     </p>
                 </div>
+
+                <div class="format-tab-wrapper">
+                    <div class="format-tabs" role="tablist" aria-label="Output format options">
+                        <button type="button" class="format-tab active" role="tab" id="fmt-json" aria-selected="true"
+                            aria-controls="format-preview-panel" onclick="setFormat('json', this)">JSON</button>
+                        <button type="button" class="format-tab" role="tab" id="fmt-table" aria-selected="false"
+                            aria-controls="format-preview-panel" onclick="setFormat('table', this)">Terminal Table</button>
+                        <button type="button" class="format-tab" role="tab" id="fmt-toon" aria-selected="false"
+                            aria-controls="format-preview-panel" onclick="setFormat('toon', this)">TOON (LLM Prompt)</button>
+                        <button type="button" class="format-tab" role="tab" id="fmt-yaml" aria-selected="false"
+                            aria-controls="format-preview-panel" onclick="setFormat('yaml', this)">YAML</button>
+                    </div>
+                    <div id="format-preview-panel" class="format-content" role="tabpanel" aria-labelledby="fmt-json"
+                        tabindex="0">
+                        <pre id="format-preview"><code>// Selected format preview will render here</code></pre>
+                    </div>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Why Move from MCP to CLI Section -->
-    <section id="mcp-vs-cli" class="section">
-        <div class="section-container">
-            <div class="section-header">
-                <h2 class="section-title">Why Shift from MCP to the CLI?</h2>
-                <p class="section-subtitle">Moving from Model Context Protocol (MCP) server daemons to direct shell tool
-                    calls to accelerate automation workflow development</p>
+        <!-- Interactive Command Playground -->
+        <section id="playground" class="section alt-bg" aria-labelledby="playground-heading">
+            <div class="section-container">
+                <div class="section-header">
+                    <h2 id="playground-heading" class="section-title">Interactive Command Directory</h2>
+                    <p class="section-subtitle">Explore zbxctl commands, flags, and raw API capabilities</p>
+                </div>
+
+                <div class="playground-wrapper">
+                    <div class="search-bar">
+                        <label for="command-search" class="sr-only">Search zbxctl commands</label>
+                        <input type="search" id="command-search"
+                            placeholder="Search commands (e.g. get host, doctor, raw, config)..."
+                            autocomplete="off" oninput="filterCommands()">
+                        <span class="search-icon" aria-hidden="true">&#128269;</span>
+                    </div>
+
+                    <!-- Screen reader search status announcement -->
+                    <div id="search-status" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+                    <div class="command-categories" role="tablist" aria-label="Command Categories">
+                        <button type="button" class="cat-btn active" role="tab" id="cat-all" aria-selected="true"
+                            aria-controls="command-list" onclick="setCategory('all', this)">All</button>
+                        <button type="button" class="cat-btn" role="tab" id="cat-tier1" aria-selected="false"
+                            aria-controls="command-list" onclick="setCategory('tier1', this)">Tier 1 Ergonomic</button>
+                        <button type="button" class="cat-btn" role="tab" id="cat-tier2" aria-selected="false"
+                            aria-controls="command-list" onclick="setCategory('tier2', this)">Tier 2 Raw Engine</button>
+                        <button type="button" class="cat-btn" role="tab" id="cat-config" aria-selected="false"
+                            aria-controls="command-list" onclick="setCategory('config', this)">Config &amp; Context</button>
+                        <button type="button" class="cat-btn" role="tab" id="cat-agent" aria-selected="false"
+                            aria-controls="command-list" onclick="setCategory('agent', this)">Agent Discovery</button>
+                    </div>
+
+                    <div id="command-list" class="command-list" role="region" aria-label="Command directory results">
+                        <!-- Command Items Populated dynamically via app.js -->
+                    </div>
+                </div>
             </div>
+        </section>
 
-            <div class="mcp-comparison-wrapper">
-                <div class="mcp-grid">
-                    <div class="mcp-card">
-                        <h3>Lower Context Overhead</h3>
-                        <p>MCP servers require large JSON Schema definitions and verbose RPC envelopes in prompt turns.
-                            <code>zbxctl</code> provides compact, token-efficient outputs (<code>-o toon</code>,
-                            <code>--brief</code>) directly via standard stdout, saving thousands of LLM context tokens.
-                        </p>
+        <!-- Project Vision & Inspiration Section -->
+        <section id="about" class="section" aria-labelledby="about-heading">
+            <div class="section-container">
+                <div class="section-header">
+                    <h2 id="about-heading" class="section-title">Inspired by kubectl &amp; dtctl</h2>
+                    <p class="section-subtitle">Bringing proven cloud-native CLI paradigms and declarative workflow patterns
+                        to Zabbix 7 monitoring</p>
+                </div>
+
+                <div class="inspiration-grid">
+                    <div class="inspiration-card">
+                        <div class="inspiration-badge">kubectl Paradigm</div>
+                        <h3>Declarative Operations &amp; Context Switching</h3>
+                        <p>Inspired by <code>kubectl</code>, <code>zbxctl</code> features multi-context switching
+                            (<code>zbxctl config use-context</code>), declarative resource manifests
+                            (<code>zbxctl apply -f manifest.yaml</code>), and live dry-run diffing
+                            (<code>zbxctl diff</code>) for Zabbix configuration management.</p>
                     </div>
-
-                    <div class="mcp-card">
-                        <h3>Universal Agent & CI/CD Compatibility</h3>
-                        <p>Virtually all AI coding assistants (Gemini, Claude, Cursor, Aider, custom scripts) and CI/CD
-                            runners natively support shell tool execution. A CLI binary works instantly everywhere
-                            without managing separate MCP daemon processes.</p>
-                    </div>
-
-                    <div class="mcp-card">
-                        <h3>Faster Workflow Development</h3>
-                        <p>Accelerate automation development with immediate shell feedback loops. Test queries
-                            interactively, chain commands with standard Unix pipes (<code>| jq</code>), and build
-                            reproducible scripts without writing custom Python or Go API wrappers.</p>
-                    </div>
-
-                    <div class="mcp-card">
-                        <h3>Deterministic Client Guardrails</h3>
-                        <p>Rather than relying on prompt instructions or background server hooks, safety checks run
-                            inside the local binary before making API calls. Configurable levels (<code>readonly</code>,
-                            <code>readwrite-mine</code>) guarantee safe execution.
+                    <div class="inspiration-card">
+                        <div class="inspiration-badge">dtctl Ergonomics</div>
+                        <h3>Structured Observability Verbs</h3>
+                        <p>Following the design philosophy of Dynatrace's <a href="https://github.com/dynatrace-oss/dtctl"
+                                target="_blank" rel="noopener noreferrer"
+                                class="citation-link-inline"><code>dtctl</code><span
+                                    class="sr-only"> (opens in new tab)</span></a> (<a
+                                href="https://github.com/dynatrace-oss/dtctl/blob/main/CITATION.cff" target="_blank"
+                                rel="noopener noreferrer"
+                                class="citation-link-secondary" style="font-size: 0.85em;">CITATION.cff<span
+                                    class="sr-only"> (opens in new tab)</span></a>), <code>zbxctl</code>
+                            standardizes Zabbix interactions into clean, consistent verbs (<code>get</code>,
+                            <code>describe</code>, <code>query</code>, <code>doctor</code>, <code>cluster-info</code>),
+                            eliminating messy manual API scripts.
                         </p>
                     </div>
                 </div>
+            </div>
+        </section>
 
-                <!-- MCP vs CLI Comparison Table -->
-                <div class="mcp-vs-table-container">
+        <!-- zabbix-cli vs zbxctl Comparison Section -->
+        <section id="zabbix-cli-comparison" class="section alt-bg" aria-labelledby="zabbix-cli-heading">
+            <div class="section-container">
+                <div class="section-header">
+                    <h2 id="zabbix-cli-heading" class="section-title">`zabbix-cli` &amp; `zbxctl`: Two Complementary Approaches</h2>
+                    <p class="section-subtitle">A respectful comparative look at the established Python administration tool
+                        created by the University of Oslo (UiO / unioslo) community and the Go declarative automation engine
+                    </p>
+                </div>
+
+                <div class="mcp-grid">
+                    <div class="mcp-card">
+                        <h3>zabbix-cli (UiO / unioslo)</h3>
+                        <p>Created by the IT team at the <strong>University of Oslo</strong> (<em>unioslo</em>),
+                            <code>zabbix-cli</code> provides an interactive REPL shell (<code>zabbix-cli&gt;</code>) and
+                            guided administrative shortcuts. Excellent for human sysadmins doing interactive terminal
+                            management and batch script operations.
+                        </p>
+                    </div>
+
+                    <div class="mcp-card">
+                        <h3>zbxctl (Declarative Engine)</h3>
+                        <p>Inspired by <code>kubectl</code> and <code>dtctl</code>, <code>zbxctl</code> is a compiled Go
+                            static binary built for non-interactive CI/CD pipelines, GitOps spec synchronization
+                            (<code>apply</code>/<code>diff</code>), AI pair programming (<code>-o toon</code>), and
+                            multi-cluster context switching.</p>
+                    </div>
+                </div>
+
+                <div class="mcp-vs-table-container" style="margin-top: 2rem;" tabindex="0" role="region"
+                    aria-label="zabbix-cli vs zbxctl comparison table">
                     <table class="mcp-vs-table">
+                        <caption class="sr-only">Detailed architectural comparison between zabbix-cli and zbxctl</caption>
                         <thead>
                             <tr>
-                                <th>Key Dimension</th>
-                                <th>Standard MCP Server Approach</th>
-                                <th>zbxctl Native CLI Approach</th>
+                                <th scope="col">Dimension</th>
+                                <th scope="col">zabbix-cli (Python / unioslo)</th>
+                                <th scope="col">zbxctl (Go / Declarative Engine)</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td><strong>Context Token Cost</strong></td>
-                                <td>High (JSON schema definitions & RPC envelopes)</td>
-                                <td><span class="highlight-cyan">Token-Optimized</span> (minimal JSON/TOON output via
-                                    stdout)</td>
+                                <th scope="row"><strong>Primary Paradigm</strong></th>
+                                <td>Interactive REPL shell (<code>zabbix-cli&gt;</code>) &amp; admin shortcuts</td>
+                                <td>Cloud-native POSIX verbs (<code>get</code>, <code>describe</code>, <code>apply</code>,
+                                    <code>raw</code>)
+                                </td>
                             </tr>
                             <tr>
-                                <td><strong>Agent & Tooling Support</strong></td>
-                                <td>Requires dedicated MCP client integration</td>
-                                <td><span class="highlight-cyan">Universal</span> (works with any shell-enabled AI
-                                    assistant & CI script)</td>
+                                <th scope="row"><strong>Deployment</strong></th>
+                                <td>Python package (<code>pip install zabbix-cli</code>)</td>
+                                <td>Single cross-compiled Go static binary (Zero runtime dependencies)</td>
                             </tr>
                             <tr>
-                                <td><strong>Developer Workflow Speed</strong></td>
-                                <td>Slower multi-hop daemon RPC debugging</td>
-                                <td><span class="highlight-cyan">Instant</span> (direct command line testing & Unix
-                                    pipes)</td>
+                                <th scope="row"><strong>Best Suited For</strong></th>
+                                <td>Interactive terminal administration &amp; sysadmin wizards</td>
+                                <td>CI/CD automation pipelines, GitOps spec sync, AI coding agents</td>
                             </tr>
                             <tr>
-                                <td><strong>Deployment Complexity</strong></td>
-                                <td>Background daemon lifecycle per environment</td>
-                                <td><span class="highlight-cyan">Zero Daemon</span> (single statically compiled Go
-                                    binary)</td>
+                                <th scope="row"><strong>Safety &amp; Contexts</strong></th>
+                                <td>User confirmation prompts &amp; profile configs</td>
+                                <td>Kubeconfig multi-context switching &amp; client safety guardrail levels</td>
                             </tr>
                             <tr>
-                                <td><strong>Safety Guardrails</strong></td>
-                                <td>Varies by server implementation</td>
-                                <td><span class="highlight-cyan">Built-in client-side binary safety middleware</span>
+                                <th scope="row"><strong>Output Formats</strong></th>
+                                <td>Formatted plain text tables &amp; lists</td>
+                                <td><code>json</code>, <code>table</code>, <code>yaml</code>, and token-optimized
+                                    <code>toon</code> for LLMs
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- zabbix-cli vs zbxctl Comparison Section -->
-    <section id="zabbix-cli-comparison" class="section alt-bg">
-        <div class="section-container">
-            <div class="section-header">
-                <h2 class="section-title">`zabbix-cli` & `zbxctl`: Two Complementary Approaches</h2>
-                <p class="section-subtitle">A respectful comparative look at the established Python administration tool
-                    created by the University of Oslo (UiO / unioslo) community and the Go declarative automation engine
-                </p>
-            </div>
-
-            <div class="mcp-grid">
-                <div class="mcp-card">
-                    <h3>zabbix-cli (UiO / unioslo)</h3>
-                    <p>Created by the IT team at the <strong>University of Oslo</strong> (<em>unioslo</em>),
-                        <code>zabbix-cli</code> provides an interactive REPL shell (<code>zabbix-cli&gt;</code>) and
-                        guided administrative shortcuts. Excellent for human sysadmins doing interactive terminal
-                        management and batch script operations.
-                    </p>
+        <!-- Features Grid -->
+        <section id="features" class="section" aria-labelledby="features-heading">
+            <div class="section-container">
+                <div class="section-header">
+                    <h2 id="features-heading" class="section-title">Developer &amp; AI Ergonomics</h2>
+                    <p class="section-subtitle">Designed for fast terminal workflows and safe LLM agent execution</p>
                 </div>
 
-                <div class="mcp-card">
-                    <h3>zbxctl (Declarative Engine)</h3>
-                    <p>Inspired by <code>kubectl</code> and <code>dtctl</code>, <code>zbxctl</code> is a compiled Go
-                        static binary built for non-interactive CI/CD pipelines, GitOps spec synchronization
-                        (<code>apply</code>/<code>diff</code>), AI pair programming (<code>-o toon</code>), and
-                        multi-cluster context switching.</p>
-                </div>
-            </div>
-
-            <div class="mcp-vs-table-container" style="margin-top: 2rem;">
-                <table class="mcp-vs-table">
-                    <thead>
-                        <tr>
-                            <th>Dimension</th>
-                            <th>zabbix-cli (Python / unioslo)</th>
-                            <th>zbxctl (Go / Declarative Engine)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Primary Paradigm</strong></td>
-                            <td>Interactive REPL shell (<code>zabbix-cli&gt;</code>) &amp; admin shortcuts</td>
-                            <td>Cloud-native POSIX verbs (<code>get</code>, <code>describe</code>, <code>apply</code>,
-                                <code>raw</code>)
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>Deployment</strong></td>
-                            <td>Python package (<code>pip install zabbix-cli</code>)</td>
-                            <td>Single cross-compiled Go static binary (Zero runtime dependencies)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Best Suited For</strong></td>
-                            <td>Interactive terminal administration &amp; sysadmin wizards</td>
-                            <td>CI/CD automation pipelines, GitOps spec sync, AI coding agents</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Safety &amp; Contexts</strong></td>
-                            <td>User confirmation prompts &amp; profile configs</td>
-                            <td>Kubeconfig multi-context switching &amp; client safety guardrail levels</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Output Formats</strong></td>
-                            <td>Formatted plain text tables &amp; lists</td>
-                            <td><code>json</code>, <code>table</code>, <code>yaml</code>, and token-optimized
-                                <code>toon</code> for LLMs
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features Grid -->
-    <section id="features" class="section">
-        <div class="section-container">
-            <div class="section-header">
-                <h2 class="section-title">Developer & AI Ergonomics</h2>
-                <p class="section-subtitle">Designed for fast terminal workflows and safe LLM agent execution</p>
-            </div>
-
-            <div class="features-grid">
-                <div class="feature-card">
-                    <h3>Tiered Command Architecture</h3>
-                    <p>Tier 1 ergonomic verbs (<code>get</code>, <code>describe</code>, <code>apply</code>,
-                        <code>delete</code>, <code>query</code>, <code>exec</code>, <code>wait</code>) paired with a
-                        Tier 2 raw JSON-RPC caller (<code>zbxctl raw</code>) for 100% Zabbix 7 API coverage.
-                    </p>
-                </div>
-
-                <div class="feature-card">
-                    <h3>Client-Side Safety Middleware</h3>
-                    <p>Enforce execution guardrails with 4 safety levels (<code>readonly</code>,
-                        <code>readwrite-mine</code>, <code>readwrite-all</code>, <code>dangerously-unrestricted</code>)
-                        directly within the binary.
-                    </p>
-                </div>
-
-                <div class="feature-card">
-                    <h3>Automatic Credential Masking</h3>
-                    <p>Display outputs automatically redact passwords, API tokens, and proxy auth headers as
-                        <code>[REDACTED]</code>, keeping secrets out of LLM contexts and logs.
-                    </p>
-                </div>
-
-                <div class="feature-card">
-                    <h3>Token-Optimized for LLMs</h3>
-                    <p>Export low-token verb tree summaries (<code>zbxctl commands --brief</code>) and consume compact
-                        outputs in Token-Optimized Object Notation (<code>-o toon</code>).</p>
-                </div>
-
-                <div class="feature-card">
-                    <h3>Universal Authentication</h3>
-                    <p>Native support for Zabbix API Tokens, User/Password login, HTTP Basic Auth, SSO headers
-                        (<code>X-Remote-User</code>), and client TLS mTLS certificates.</p>
-                </div>
-
-                <div class="feature-card">
-                    <h3>Open Source & Community Driven</h3>
-                    <p>Released under the permissive Apache License 2.0. Built in the open—feedback, issues, and pull
-                        requests are welcomed as we iterate!</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Interactive Command Playground -->
-    <section id="playground" class="section">
-        <div class="section-container">
-            <div class="section-header">
-                <h2 class="section-title">Interactive Command Directory</h2>
-                <p class="section-subtitle">Explore zbxctl commands, flags, and raw API capabilities</p>
-            </div>
-
-            <div class="playground-wrapper">
-                <div class="search-bar">
-                    <input type="text" id="command-search"
-                        placeholder="Search commands (e.g. get host, doctor, raw, config)..."
-                        oninput="filterCommands()">
-                    <span class="search-icon"></span>
-                </div>
-
-                <div class="command-categories">
-                    <button class="cat-btn active" onclick="setCategory('all', this)">All</button>
-                    <button class="cat-btn" onclick="setCategory('tier1', this)">Tier 1 Ergonomic</button>
-                    <button class="cat-btn" onclick="setCategory('tier2', this)">Tier 2 Raw Engine</button>
-                    <button class="cat-btn" onclick="setCategory('config', this)">Config & Context</button>
-                    <button class="cat-btn" onclick="setCategory('agent', this)">Agent Discovery</button>
-                </div>
-
-                <div id="command-list" class="command-list">
-                    <!-- Command Items Populated dynamically via app.js -->
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Safety Level Matrix -->
-    <section id="safety" class="section alt-bg">
-        <div class="section-container">
-            <div class="section-header">
-                <h2 class="section-title">Client-Side Safety Middleware Matrix</h2>
-                <p class="section-subtitle">Client-side safety controls to prevent unintended mutations during rapid
-                    automation and AI pair programming</p>
-            </div>
-
-            <div class="safety-interactive">
-                <div class="safety-selector">
-                    <div class="safety-option active" data-level="readonly" onclick="selectSafety('readonly', this)">
-                        <div class="safety-badge level-readonly">readonly</div>
-                        <p>Strict read-only safety mode</p>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h3>Tiered Command Architecture</h3>
+                        <p>Tier 1 ergonomic verbs (<code>get</code>, <code>describe</code>, <code>apply</code>,
+                            <code>delete</code>, <code>query</code>, <code>exec</code>, <code>wait</code>) paired with a
+                            Tier 2 raw JSON-RPC caller (<code>zbxctl raw</code>) for 100% Zabbix 7 API coverage.
+                        </p>
                     </div>
-                    <div class="safety-option" data-level="readwrite-mine"
-                        onclick="selectSafety('readwrite-mine', this)">
-                        <div class="safety-badge level-mine">readwrite-mine</div>
-                        <p>Mutates tagged resources only</p>
+
+                    <div class="feature-card">
+                        <h3>Client-Side Safety Middleware</h3>
+                        <p>Enforce execution guardrails with 4 safety levels (<code>readonly</code>,
+                            <code>readwrite-mine</code>, <code>readwrite-all</code>, <code>dangerously-unrestricted</code>)
+                            directly within the binary.
+                        </p>
                     </div>
-                    <div class="safety-option" data-level="readwrite-all" onclick="selectSafety('readwrite-all', this)">
-                        <div class="safety-badge level-all">readwrite-all</div>
-                        <p>Full administrative access</p>
+
+                    <div class="feature-card">
+                        <h3>Automatic Credential Masking</h3>
+                        <p>Display outputs automatically redact passwords, API tokens, and proxy auth headers as
+                            <code>[REDACTED]</code>, keeping secrets out of LLM contexts and logs.
+                        </p>
                     </div>
-                    <div class="safety-option" data-level="dangerously-unrestricted"
-                        onclick="selectSafety('dangerously-unrestricted', this)">
-                        <div class="safety-badge level-danger">dangerously-unrestricted</div>
-                        <p>Bypasses all safety checks</p>
+
+                    <div class="feature-card">
+                        <h3>Token-Optimized for LLMs</h3>
+                        <p>Export low-token verb tree summaries (<code>zbxctl commands --brief</code>) and consume compact
+                            outputs in Token-Optimized Object Notation (<code>-o toon</code>).</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h3>Universal Authentication</h3>
+                        <p>Native support for Zabbix API Tokens, User/Password login, HTTP Basic Auth, SSO headers
+                            (<code>X-Remote-User</code>), and client TLS mTLS certificates.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h3>Open Source &amp; Community Driven</h3>
+                        <p>Released under the permissive Apache License 2.0. Built in the open—feedback, issues, and pull
+                            requests are welcomed as we iterate!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quickstart & AI Skills Setup Section -->
+        <section id="quickstart" class="section alt-bg" aria-labelledby="quickstart-heading">
+            <div class="section-container">
+                <div class="section-header">
+                    <h2 id="quickstart-heading" class="section-title">10-Second Setup for Developers &amp; AI Agents</h2>
+                    <p class="section-subtitle">Zero runtime dependencies, single static binary, and 1-command AI skills installation for Claude Code, Antigravity, Cursor, and CI/CD</p>
+                </div>
+
+                <div class="quickstart-steps">
+                    <!-- Step 1 -->
+                    <div class="step-card">
+                        <div class="step-header">
+                            <div class="step-num" aria-hidden="true">1</div>
+                            <h3 class="step-title">Install Binary</h3>
+                        </div>
+                        <p class="step-desc">Download the single compiled Go static binary. Zero runtime dependencies, no Python environments or node daemons required.</p>
+                        <div class="step-code-box">
+                            <code>curl -sL .../zbxctl | tar -xz</code>
+                            <button type="button" class="copy-btn" aria-label="Copy step 1 command" onclick="copyText('curl -sL https://github.com/ErKatta/zbxctl/releases/latest/download/zbxctl_linux_amd64.tar.gz | tar -xz && sudo mv zbxctl /usr/local/bin/', this)">Copy</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="step-card">
+                        <div class="step-header">
+                            <div class="step-num" aria-hidden="true">2</div>
+                            <h3 class="step-title">Connect Context</h3>
+                        </div>
+                        <p class="step-desc">Authenticate against your Zabbix 7 instance and configure context safety levels (<code>readonly</code> by default for AI agents).</p>
+                        <div class="step-code-box">
+                            <code>zbxctl login https://zabbix.io -u admin</code>
+                            <button type="button" class="copy-btn" aria-label="Copy step 2 command" onclick="copyText('zbxctl login https://zabbix.internal:8080/ -u admin --context=prod-cluster', this)">Copy</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="step-card">
+                        <div class="step-header">
+                            <div class="step-num" aria-hidden="true">3</div>
+                            <h3 class="step-title">Equip AI Agents</h3>
+                        </div>
+                        <p class="step-desc">Install 4 pre-packaged expert skills into Antigravity, Claude Code, Cursor, Windsurf, Copilot, or repo workspace with 1 command.</p>
+                        <div class="step-code-box">
+                            <code>zbxctl skill install --all</code>
+                            <button type="button" class="copy-btn" aria-label="Copy step 3 command" onclick="copyText('zbxctl skill install --all', this)">Copy</button>
+                        </div>
                     </div>
                 </div>
 
-                <div id="safety-details" class="safety-details">
-                    <!-- Dynamic safety level content -->
+                <div class="section-header" style="margin-top: 1rem;">
+                    <h3 style="font-family: var(--font-heading); font-size: 1.4rem; color: var(--zabbix-navy); margin-bottom: 0.5rem;">Pre-Packaged AI Agent Skills</h3>
+                    <p class="section-subtitle">Built-in skills teach AI assistants how to interact with Zabbix 7 deterministically without manual prompt engineering</p>
+                </div>
+
+                <div class="skills-grid">
+                    <div class="skill-card">
+                        <div class="skill-card-top">
+                            <span class="skill-name">zabbix-automation</span>
+                            <span class="skill-badge">GitOps</span>
+                        </div>
+                        <p>Declarative Zabbix 7 resource management, GitOps manifests, apply/diff workflows, and spec synchronization.</p>
+                        <div class="skill-cmd-mini">zbxctl skill show zabbix-automation</div>
+                    </div>
+
+                    <div class="skill-card">
+                        <div class="skill-card-top">
+                            <span class="skill-name">zabbix-troubleshooting</span>
+                            <span class="skill-badge">Incident Triage</span>
+                        </div>
+                        <p>Incident investigation, active problem analysis, trigger thresholds, and root-cause diagnosis for Zabbix 7.</p>
+                        <div class="skill-cmd-mini">zbxctl skill show zabbix-troubleshooting</div>
+                    </div>
+
+                    <div class="skill-card">
+                        <div class="skill-card-top">
+                            <span class="skill-name">zabbix-telemetry</span>
+                            <span class="skill-badge">Token Economy</span>
+                        </div>
+                        <p>High-frequency metric extraction, time window filtering (<code>--since=4h</code>), and LLM token optimization (<code>-o toon</code>).</p>
+                        <div class="skill-cmd-mini">zbxctl skill show zabbix-telemetry</div>
+                    </div>
+
+                    <div class="skill-card">
+                        <div class="skill-card-top">
+                            <span class="skill-name">zabbix-safety</span>
+                            <span class="skill-badge">Guardrails</span>
+                        </div>
+                        <p>Client-side safety middleware levels (<code>readonly</code>, <code>readwrite-mine</code>, <code>readwrite-all</code>) and Exit Code 2 error envelopes.</p>
+                        <div class="skill-cmd-mini">zbxctl skill show zabbix-safety</div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Machine Output Formats -->
-    <section id="formats" class="section">
-        <div class="section-container">
-            <div class="section-header">
-                <h2 class="section-title">Multi-Format Machine Outputs</h2>
-                <p class="section-subtitle">Switch seamlessly between human terminal tables and token-efficient formats
-                </p>
+        <!-- Installation & Binaries Section -->
+        <section id="install" class="section" aria-labelledby="install-heading">
+            <div class="section-container">
+                <div class="section-header">
+                    <h2 id="install-heading" class="section-title">Zero-Dependency Binary Downloads</h2>
+                    <p class="section-subtitle">Single cross-compiled static binary with zero external runtime dependencies.
+                        Precompiled for Linux, macOS, and Windows.</p>
+                </div>
+
+                <div class="install-grid">
+                    <!-- Linux Card -->
+                    <div class="install-card">
+                        <div class="install-card-header">
+                            <div class="install-os-info">
+                                <span class="os-icon" role="img" aria-label="Linux">🐧</span>
+                                <div>
+                                    <h3>Linux</h3>
+                                    <div class="arch-badges">
+                                        <span class="arch-badge">x86_64</span>
+                                        <span class="arch-badge">ARM64</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="install-desc">Works on all Linux distributions (Ubuntu, Debian, RHEL, Alpine, etc.).</p>
+                        <div class="install-cmd-block">
+                            <code
+                                id="cmd-linux">curl -sL https://github.com/ErKatta/zbxctl/releases/download/v0.1.0/zbxctl_0.1.0_linux_amd64.tar.gz | tar -xz &amp;&amp; sudo mv zbxctl /usr/local/bin/</code>
+                            <button type="button" class="copy-btn" aria-label="Copy Linux installation command"
+                                onclick="copyElementText('cmd-linux', this)">Copy</button>
+                        </div>
+                        <div class="direct-downloads">
+                            <a id="dl-linux-amd64"
+                                href="https://github.com/ErKatta/zbxctl/releases/download/v0.1.0/zbxctl_0.1.0_linux_amd64.tar.gz"
+                                class="dl-link">Download Linux x86_64 (.tar.gz)</a>
+                            <a id="dl-linux-arm64"
+                                href="https://github.com/ErKatta/zbxctl/releases/download/v0.1.0/zbxctl_0.1.0_linux_arm64.tar.gz"
+                                class="dl-link">Download Linux ARM64 (.tar.gz)</a>
+                        </div>
+                    </div>
+
+                    <!-- macOS Card -->
+                    <div class="install-card">
+                        <div class="install-card-header">
+                            <div class="install-os-info">
+                                <span class="os-icon" role="img" aria-label="macOS Apple">🍎</span>
+                                <div>
+                                    <h3>macOS</h3>
+                                    <div class="arch-badges">
+                                        <span class="arch-badge">Apple Silicon</span>
+                                        <span class="arch-badge">Intel</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="install-desc">Universal binary for Apple Silicon (M1/M2/M3/M4) and Intel Macs.</p>
+                        <div class="install-cmd-block">
+                            <code
+                                id="cmd-darwin">curl -sL https://github.com/ErKatta/zbxctl/releases/download/v0.1.0/zbxctl_0.1.0_darwin_arm64.tar.gz | tar -xz &amp;&amp; sudo mv zbxctl /usr/local/bin/</code>
+                            <button type="button" class="copy-btn" aria-label="Copy macOS installation command"
+                                onclick="copyElementText('cmd-darwin', this)">Copy</button>
+                        </div>
+                        <div class="direct-downloads">
+                            <a id="dl-darwin-arm64"
+                                href="https://github.com/ErKatta/zbxctl/releases/download/v0.1.0/zbxctl_0.1.0_darwin_arm64.tar.gz"
+                                class="dl-link">Download Apple Silicon (.tar.gz)</a>
+                            <a id="dl-darwin-amd64"
+                                href="https://github.com/ErKatta/zbxctl/releases/download/v0.1.0/zbxctl_0.1.0_darwin_amd64.tar.gz"
+                                class="dl-link">Download Intel (.tar.gz)</a>
+                        </div>
+                    </div>
+
+                    <!-- Windows Card -->
+                    <div class="install-card">
+                        <div class="install-card-header">
+                            <div class="install-os-info">
+                                <span class="os-icon" role="img" aria-label="Windows">🪟</span>
+                                <div>
+                                    <h3>Windows</h3>
+                                    <div class="arch-badges">
+                                        <span class="arch-badge">x86_64</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="install-desc">Standalone executable for Windows PowerShell or Command Prompt.</p>
+                        <div class="install-cmd-block">
+                            <code
+                                id="cmd-windows">Invoke-WebRequest -Uri "https://github.com/ErKatta/zbxctl/releases/download/v0.1.0/zbxctl_0.1.0_windows_amd64.zip" -OutFile "zbxctl.zip"; Expand-Archive zbxctl.zip -DestinationPath "$HOME\bin"</code>
+                            <button type="button" class="copy-btn" aria-label="Copy Windows installation command"
+                                onclick="copyElementText('cmd-windows', this)">Copy</button>
+                        </div>
+                        <div class="direct-downloads">
+                            <a id="dl-windows-amd64"
+                                href="https://github.com/ErKatta/zbxctl/releases/download/v0.1.0/zbxctl_0.1.0_windows_amd64.zip"
+                                class="dl-link">Download Windows x86_64 (.zip)</a>
+                        </div>
+                    </div>
+
+                    <!-- Go Toolchain Card -->
+                    <div class="install-card alt-install-card">
+                        <div class="install-card-header">
+                            <div class="install-os-info">
+                                <span class="os-icon" role="img" aria-label="Go Fast Toolchain">⚡</span>
+                                <div>
+                                    <h3>Go Toolchain</h3>
+                                    <div class="arch-badges">
+                                        <span class="arch-badge">Go 1.22+</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="install-desc">For developers with Go installed who prefer compiling from latest module source.</p>
+                        <div class="install-cmd-block">
+                            <code id="cmd-go">go install github.com/ErKatta/zbxctl@latest</code>
+                            <button type="button" class="copy-btn" aria-label="Copy Go install command"
+                                onclick="copyText('go install github.com/ErKatta/zbxctl@latest', this)">Copy</button>
+                        </div>
+                        <div class="direct-downloads">
+                            <a href="https://github.com/ErKatta/zbxctl/releases" target="_blank" rel="noopener noreferrer"
+                                class="dl-link github-rel-btn">Browse All GitHub Releases &rarr; <span class="sr-only">(opens in new tab)</span></a>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </section>
 
-            <div class="format-tab-wrapper">
-                <div class="format-tabs">
-                    <button class="format-tab active" onclick="setFormat('json', this)">JSON</button>
-                    <button class="format-tab" onclick="setFormat('table', this)">Terminal Table</button>
-                    <button class="format-tab" onclick="setFormat('toon', this)">TOON (LLM Prompt)</button>
-                    <button class="format-tab" onclick="setFormat('yaml', this)">YAML</button>
-                </div>
-                <div class="format-content">
-                    <pre id="format-preview"><code>// Selected format preview will render here</code></pre>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- License Section -->
-    <section id="license" class="section alt-bg">
-        <div class="section-container text-center">
-            <div class="license-box">
-                <span class="license-icon"></span>
-                <h2>Open Source under Apache License 2.0</h2>
-                <p>
-                    <code>zbxctl</code> is an open-source project released under the <strong>Apache
-                        License 2.0</strong>.
-                    We invite developers, DevOps engineers, and AI enthusiasts to test automation workflows and
-                    contribute to the project on GitHub.
-                </p>
-                <div class="license-actions">
-                    <a href="https://github.com/ErKatta/zbxctl/blob/main/LICENSE" target="_blank"
-                        class="btn btn-secondary">Read Apache 2.0 License</a>
-                    <a href="https://github.com/ErKatta/zbxctl" target="_blank" class="btn btn-primary">View GitHub
-                        Repository </a>
-                </div>
-                <div class="acknowledgements-note" style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); font-size: 0.88rem; color: var(--text-muted); line-height: 1.5;">
+        <!-- License Section -->
+        <section id="license" class="section alt-bg" aria-labelledby="license-heading">
+            <div class="section-container text-center">
+                <div class="license-box">
+                    <span class="license-icon" aria-hidden="true">&#128220;</span>
+                    <h2 id="license-heading">Open Source under Apache License 2.0</h2>
                     <p>
-                        <strong>Acknowledgements &amp; Citations:</strong> Inspired by and acknowledging the foundational design of 
-                        <a href="https://github.com/dynatrace-oss/dtctl" target="_blank" style="color: var(--zabbix-blue); font-weight: 600;">dtctl</a> (Dynatrace OSS; <a href="https://github.com/dynatrace-oss/dtctl/blob/main/CITATION.cff" target="_blank" style="color: var(--zabbix-blue);">CITATION.cff</a>), 
-                        <a href="https://kubernetes.io/" target="_blank" style="color: var(--zabbix-blue); font-weight: 600;">kubectl</a> (CNCF), and 
-                        <a href="https://github.com/unioslo/zabbix-cli" target="_blank" style="color: var(--zabbix-blue); font-weight: 600;">zabbix-cli</a> (University of Oslo). 
-                        To cite this project, see <a href="https://github.com/ErKatta/zbxctl/blob/main/CITATION.cff" target="_blank" style="color: var(--zabbix-blue);"><code>CITATION.cff</code></a>.
+                        <code>zbxctl</code> is an open-source project released under the <strong>Apache
+                            License 2.0</strong>.
+                        We invite developers, DevOps engineers, and AI enthusiasts to test automation workflows and
+                        contribute to the project on GitHub.
                     </p>
+                    <div class="license-actions">
+                        <a href="https://github.com/ErKatta/zbxctl/blob/main/LICENSE" target="_blank"
+                            rel="noopener noreferrer" class="btn btn-secondary">
+                            Read Apache 2.0 License
+                            <span class="sr-only">(opens in new tab)</span>
+                        </a>
+                        <a href="https://github.com/ErKatta/zbxctl" target="_blank" rel="noopener noreferrer"
+                            class="btn btn-primary">
+                            View GitHub Repository
+                            <span class="sr-only">(opens in new tab)</span>
+                        </a>
+                    </div>
+                    <div class="acknowledgements-note">
+                        <p>
+                            <strong>Acknowledgements &amp; Citations:</strong> Inspired by and acknowledging the foundational design of 
+                            <a href="https://github.com/dynatrace-oss/dtctl" target="_blank" rel="noopener noreferrer"
+                                class="citation-link">dtctl<span class="sr-only"> (opens in new tab)</span></a> (Dynatrace OSS; <a
+                                href="https://github.com/dynatrace-oss/dtctl/blob/main/CITATION.cff" target="_blank" rel="noopener noreferrer"
+                                class="citation-link-secondary">CITATION.cff<span class="sr-only"> (opens in new tab)</span></a>), 
+                            <a href="https://kubernetes.io/" target="_blank" rel="noopener noreferrer"
+                                class="citation-link">kubectl<span class="sr-only"> (opens in new tab)</span></a> (CNCF), and 
+                            <a href="https://github.com/unioslo/zabbix-cli" target="_blank" rel="noopener noreferrer"
+                                class="citation-link">zabbix-cli<span class="sr-only"> (opens in new tab)</span></a> (University of Oslo). 
+                            To cite this project, see <a href="https://github.com/ErKatta/zbxctl/blob/main/CITATION.cff" target="_blank" rel="noopener noreferrer"
+                                class="citation-link-secondary"><code>CITATION.cff</code><span class="sr-only"> (opens in new tab)</span></a>.
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </main>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer" role="contentinfo">
         <div class="footer-container">
             <div class="footer-brand">
-                <span class="brand-icon"></span>
+                <span class="brand-icon" aria-hidden="true">&#9881;</span>
                 <span class="brand-name">zbxctl</span>
-                <p>An open-source Zabbix 7 CLI inspired by kubectl & dtctl</p>
+                <p>An open-source Zabbix 7 CLI inspired by kubectl &amp; dtctl</p>
             </div>
-            <div class="footer-links">
-                <a href="#about">About</a>
+            <nav class="footer-links" aria-label="Footer Navigation">
                 <a href="#mcp-vs-cli">MCP vs CLI</a>
-                <a href="#features">Features</a>
+                <a href="#agent-simulation">Agent Demo</a>
+                <a href="#safety">Safety &amp; Formats</a>
                 <a href="#playground">Commands</a>
-                <a href="#safety">Safety</a>
-                <a href="https://github.com/ErKatta/zbxctl" target="_blank">GitHub</a>
-            </div>
+                <a href="#about">Comparisons</a>
+                <a href="#quickstart">Quickstart &amp; Install</a>
+                <a href="https://github.com/ErKatta/zbxctl" target="_blank" rel="noopener noreferrer">
+                    GitHub
+                    <span class="sr-only">(opens in new tab)</span>
+                </a>
+            </nav>
             <div class="footer-copyright">
                 <p>&copy; <span id="current-year">2026</span> Marco Cattarin &amp; zbxctl Contributors. Released under
                     Apache License 2.0.</p>
             </div>
         </div>
     </footer>
+
+    <!-- Screen Reader Live Announcer Region (WCAG 4.1.3) -->
+    <div id="a11y-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
     <script src="app.js"></script>
 </body>
 

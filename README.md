@@ -2,7 +2,7 @@
  <img src="docs/zbxctl_logo.png" alt="zbxctl Logo" width="140">
 </p>
 
-# `zbxctl` - Open Source Zabbix 7 CLI & Automation Engine
+# `zbxctl` - Open Source Zabbix CLI & AI Agent Companion
 
 [![CI Pipeline](https://github.com/ErKatta/zbxctl/actions/workflows/ci.yml/badge.svg)](https://github.com/ErKatta/zbxctl/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/ErKatta/zbxctl?color=d1232a&label=release)](https://github.com/ErKatta/zbxctl/releases)
@@ -11,7 +11,7 @@
 [![Zabbix Version](https://img.shields.io/badge/Zabbix-7.0%2B%20LTS-d1232a.svg)](https://www.zabbix.com)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-> `zbxctl` is an open-source CLI and automation engine for Zabbix 7.0+ LTS. Inspired by **`kubectl`** (Kubernetes CLI) and **`dtctl`** (Dynatrace CLI), its core goal is to transition developers and AI agents from heavyweight Model Context Protocol (MCP) server daemons to direct CLI execution—accelerating automation workflow development.
+> `zbxctl` is an open-source CLI and AI agent companion for Zabbix 7.0+ LTS. Inspired by **`kubectl`** (Kubernetes CLI) and **`dtctl`** (Dynatrace CLI), its core goal is to transition developers and AI agents from heavyweight Model Context Protocol (MCP) server daemons to direct CLI execution—accelerating automation workflow development.
 
 [**Website**](https://ErKatta.github.io/zbxctl/) | [**Wiki**](docs/wiki/Home.md) | [**Contributing**](CONTRIBUTING.md) | [**Security**](SECURITY.md) | [**Code of Conduct**](CODE_OF_CONDUCT.md)
 

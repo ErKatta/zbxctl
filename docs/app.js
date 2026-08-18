@@ -1,62 +1,63 @@
 /* ==========================================================================
- zbxctl Interactive Logic & Data
- ========================================================================== */
+   zbxctl Interactive Logic, Mobile Navigation & Accessible UI
+   ========================================================================== */
+'use strict';
 
 const commandsData = [
- {
- name: "zbxctl config current-config",
- category: "config",
- desc: "Display active context configuration with automatic [REDACTED] credential masking.",
- example: "zbxctl config current-config -o json"
- },
- {
- name: "zbxctl get host",
- category: "tier1",
- desc: "Fetch Zabbix hosts with filtering and custom output formats.",
- example: "zbxctl get host web-prod-01 -o json"
- },
- {
- name: "zbxctl get problem",
- category: "tier1",
- desc: "List active problems filtered by severity or resource tags.",
- example: "zbxctl get problem --filter='{\"severity\": 4}'"
- },
- {
- name: "zbxctl describe host",
- category: "tier1",
- desc: "Inspect detailed extended configuration metadata for a single host.",
- example: "zbxctl describe host 10001"
- },
   {
-  name: "zbxctl skill install --all",
-  category: "tier1",
-  desc: "Install built-in AI agent skills (automation, troubleshooting, telemetry, safety) into agent config.",
-  example: "zbxctl skill install --all"
+    name: "zbxctl config current-config",
+    category: "config",
+    desc: "Display active context configuration with automatic [REDACTED] credential masking.",
+    example: "zbxctl config current-config -o json"
   },
- {
- name: "zbxctl login --context",
- category: "config",
- desc: "Authenticate against Zabbix API and automatically save & activate specified context name.",
- example: "zbxctl login http://zabbix.local:8080/ -u admin --context=prod-cluster"
- },
- {
- "name": "zbxctl get metric --since",
- category: "tier1",
- desc: "Fetch historical metric telemetry samples for a duration window (e.g. last 4h, 30m).",
- example: "zbxctl get metric 23253 --since=4h -o table"
- },
- {
- name: "zbxctl get item --host --fields",
- category: "tier1",
- desc: "Retrieve all items for a target host ID or name filtered by specific fields.",
- example: "zbxctl get item --host='Zabbix server' --fields=itemid,name,description"
- },
- {
- name: "zbxctl query item",
- category: "tier1",
- desc: "Advanced search and metric key filtering across items.",
- example: "zbxctl query item --search='key_=system.cpu' --limit=5"
- },
+  {
+    name: "zbxctl get host",
+    category: "tier1",
+    desc: "Fetch Zabbix hosts with filtering and custom output formats.",
+    example: "zbxctl get host web-prod-01 -o json"
+  },
+  {
+    name: "zbxctl get problem",
+    category: "tier1",
+    desc: "List active problems filtered by severity or resource tags.",
+    example: "zbxctl get problem --filter='{\"severity\": 4}'"
+  },
+  {
+    name: "zbxctl describe host",
+    category: "tier1",
+    desc: "Inspect detailed extended configuration metadata for a single host.",
+    example: "zbxctl describe host 10001"
+  },
+  {
+    name: "zbxctl skill install --all",
+    category: "tier1",
+    desc: "Install built-in AI agent skills (automation, troubleshooting, telemetry, safety) into agent config.",
+    example: "zbxctl skill install --all"
+  },
+  {
+    name: "zbxctl login --context",
+    category: "config",
+    desc: "Authenticate against Zabbix API and automatically save & activate specified context name.",
+    example: "zbxctl login http://zabbix.local:8080/ -u admin --context=prod-cluster"
+  },
+  {
+    name: "zbxctl get metric --since",
+    category: "tier1",
+    desc: "Fetch historical metric telemetry samples for a duration window (e.g. last 4h, 30m).",
+    example: "zbxctl get metric 23253 --since=4h -o table"
+  },
+  {
+    name: "zbxctl get item --host --fields",
+    category: "tier1",
+    desc: "Retrieve all items for a target host ID or name filtered by specific fields.",
+    example: "zbxctl get item --host='Zabbix server' --fields=itemid,name,description"
+  },
+  {
+    name: "zbxctl query item",
+    category: "tier1",
+    desc: "Advanced search and metric key filtering across items.",
+    example: "zbxctl query item --search='key_=system.cpu' --limit=5"
+  },
   {
     name: "zbxctl edit host",
     category: "tier1",
@@ -69,36 +70,36 @@ const commandsData = [
     desc: "Declaratively create or update Zabbix resources from YAML/JSON manifests.",
     example: "zbxctl apply -f host-manifest.yaml"
   },
- {
- name: "zbxctl diff -f manifest.yaml",
- category: "tier1",
- desc: "Compare local manifest definition against live Zabbix server state.",
- example: "zbxctl diff -f host.yaml --id=10001"
- },
- {
- name: "zbxctl delete host",
- category: "tier1",
- desc: "Delete host resources by ID (requires non-readonly safety level).",
- example: "zbxctl delete host 10001 10002 --force"
- },
- {
- name: "zbxctl exec",
- category: "tier1",
- desc: "Execute a registered Zabbix script directly on a target host.",
- example: "zbxctl exec 1 --hostid=10001"
- },
- {
- name: "zbxctl wait problem",
- category: "tier1",
- desc: "Poll and wait until a specific problem condition resolves.",
- example: "zbxctl wait problem 12345 --for=resolved --timeout=60s"
- },
- {
- name: "zbxctl doctor",
- category: "agent",
- desc: "Diagnose API connectivity, token validity, and context safety level.",
- example: "zbxctl doctor"
- },
+  {
+    name: "zbxctl diff -f manifest.yaml",
+    category: "tier1",
+    desc: "Compare local manifest definition against live Zabbix server state.",
+    example: "zbxctl diff -f host.yaml --id=10001"
+  },
+  {
+    name: "zbxctl delete host",
+    category: "tier1",
+    desc: "Delete host resources by ID (requires non-readonly safety level).",
+    example: "zbxctl delete host 10001 10002 --force"
+  },
+  {
+    name: "zbxctl exec",
+    category: "tier1",
+    desc: "Execute a registered Zabbix script directly on a target host.",
+    example: "zbxctl exec 1 --hostid=10001"
+  },
+  {
+    name: "zbxctl wait problem",
+    category: "tier1",
+    desc: "Poll and wait until a specific problem condition resolves.",
+    example: "zbxctl wait problem 12345 --for=resolved --timeout=60s"
+  },
+  {
+    name: "zbxctl doctor",
+    category: "agent",
+    desc: "Diagnose API connectivity, token validity, and context safety level.",
+    example: "zbxctl doctor"
+  },
   {
     name: "zbxctl version",
     category: "agent",
@@ -152,63 +153,130 @@ const safetyMatrixData = {
   }
 }`
   },
- "readwrite-mine": {
- title: "readwrite-mine",
- subtitle: "Scoped Mutations for Managed Infrastructure",
- allowed: ["All read operations", "Mutations on resources tagged zbxctl=true or managed-by=zbxctl"],
- blocked: ["Un-tagged infrastructure", "Instance-wide destructive edits"],
- sampleError: `{
- "error": {
- "code": "SAFETY_LEVEL_VIOLATION",
- "method": "host.update",
- "message": "Target resource is not tagged 'zbxctl=true' under safety-level 'readwrite-mine'.",
- "resolution": "Add 'zbxctl=true' tag to resource or upgrade safety level."
- }
+  "readwrite-mine": {
+    title: "readwrite-mine",
+    subtitle: "Scoped Mutations for Managed Infrastructure",
+    allowed: ["All read operations", "Mutations on resources tagged zbxctl=true or managed-by=zbxctl"],
+    blocked: ["Un-tagged infrastructure", "Instance-wide destructive edits"],
+    sampleError: `{
+  "error": {
+    "code": "SAFETY_LEVEL_VIOLATION",
+    "method": "host.update",
+    "message": "Target resource is not tagged 'zbxctl=true' under safety-level 'readwrite-mine'.",
+    "resolution": "Add 'zbxctl=true' tag to resource or upgrade safety level."
+  }
 }`
- },
- "readwrite-all": {
- title: "readwrite-all",
- subtitle: "Full Administrative Mutations (Guardrails Preserved)",
- allowed: ["All Zabbix API operations", "Single resource mutations", "Bulk actions with --force"],
- blocked: ["Bulk deletes without explicit --force flag"],
- sampleError: `{
- "error": {
- "code": "SAFETY_LEVEL_VIOLATION",
- "method": "host.delete",
- "message": "Bulk deletion of multiple hosts requires explicit '--force' flag.",
- "resolution": "Pass '--force' flag to confirm destructive bulk action."
- }
+  },
+  "readwrite-all": {
+    title: "readwrite-all",
+    subtitle: "Full Administrative Mutations (Guardrails Preserved)",
+    allowed: ["All Zabbix API operations", "Single resource mutations", "Bulk actions with --force"],
+    blocked: ["Bulk deletes without explicit --force flag"],
+    sampleError: `{
+  "error": {
+    "code": "SAFETY_LEVEL_VIOLATION",
+    "method": "host.delete",
+    "message": "Bulk deletion of multiple hosts requires explicit '--force' flag.",
+    "resolution": "Pass '--force' flag to confirm destructive bulk action."
+  }
 }`
- },
- "dangerously-unrestricted": {
- title: "dangerously-unrestricted",
- subtitle: "Zero Guardrails - Expert Systems Only",
- allowed: ["All 100% Zabbix API calls without safety checks"],
- blocked: ["None"],
- sampleError: `// No safety checks applied. All commands execute directly.`
- }
+  },
+  "dangerously-unrestricted": {
+    title: "dangerously-unrestricted",
+    subtitle: "Zero Guardrails - Expert Systems Only",
+    allowed: ["All 100% Zabbix API calls without safety checks"],
+    blocked: ["None"],
+    sampleError: `// No safety checks applied. All commands execute directly.`
+  }
 };
 
 const formatPreviews = {
- json: `[
- {
- "hostid": "10084",
- "host": "web-prod-01",
- "name": "Production Web Node 01",
- "status": "0",
- "safety_level": "readonly"
- }
+  json: `[
+  {
+    "hostid": "10084",
+    "host": "web-prod-01",
+    "name": "Production Web Node 01",
+    "status": "0",
+    "safety_level": "readonly"
+  }
 ]`,
- table: `+--------+-------------+-----------------------+--------+
-| HOSTID | HOST | NAME | STATUS |
+  table: `+--------+-------------+-----------------------+--------+
+| HOSTID | HOST        | NAME                  | STATUS |
 +--------+-------------+-----------------------+--------+
-| 10084 | web-prod-01 | Production Web Node 1 | 0 (UP) |
+| 10084  | web-prod-01 | Production Web Node 1 | 0 (UP) |
 +--------+-------------+-----------------------+--------+`,
- toon: `[{"hostid":"10084","host":"web-prod-01","name":"Production Web Node 01","status":"0"}]`,
- yaml: `- hostid: "10084"
- host: "web-prod-01"
- name: "Production Web Node 01"
- status: "0"`
+  toon: `[{"hostid":"10084","host":"web-prod-01","name":"Production Web Node 01","status":"0"}]`,
+  yaml: `- hostid: "10084"
+  host: "web-prod-01"
+  name: "Production Web Node 01"
+  status: "0"`
+};
+
+const agentScenariosData = {
+  incident: {
+    id: "incident",
+    title: "Incident Triage & Root-Cause Diagnosis",
+    badge: "Skills: troubleshooting + telemetry",
+    userPrompt: "Alert firing on prod-api-01: high response latency and CPU exhaustion in the last 2 hours. Investigate root cause and check recent item metrics.",
+    thought1: "Analyzing active problem triggers on host 'prod-api-01' using token-optimized TOON output...",
+    command1: "zbxctl get problem --host=prod-api-01 -o toon",
+    output1: `[{"eventid":"20419","host":"prod-api-01","problem":"CPU utilization > 95%","severity":4,"age":"38m","ack":"No"},{"eventid":"20422","host":"prod-api-01","problem":"Worker pool thread starvation (>128 threads)","severity":3,"age":"32m","ack":"No"}]`,
+    thought2: "Isolating worker thread telemetry and CPU queue metrics over the 2-hour window...",
+    command2: "zbxctl get metric 48201 --since=2h --step=60s -o toon",
+    output2: `{"itemid":"48201","key":"app.threads.active","samples":[{"t":"13:45","v":32},{"t":"14:10","v":128},{"t":"14:30","v":144},{"t":"15:00","v":140}]}`,
+    agentResponse: "Root Cause Identified: Worker thread pool on prod-api-01 reached max saturation (144 active threads vs 128 max limit) starting at 14:10 UTC, cascading into 96.4% CPU usage and latency degradation.\n\nRecommended Fix: Scale worker pool limit to 256 or enable request shedding in /etc/app/config.yaml.",
+    tokenSavings: "TOON output: 148 tokens vs Raw JSON: 1,640 tokens (91% LLM token reduction)"
+  },
+  gitops: {
+    id: "gitops",
+    title: "GitOps Declarative Spec Synchronization",
+    badge: "Skill: zabbix-automation",
+    userPrompt: "Review drift on our Redis cluster monitoring manifest redis-cluster.yaml and apply updates safely.",
+    thought1: "Performing dry-run differential analysis against live Zabbix 7 server state...",
+    command1: "zbxctl diff -f manifests/redis-cluster.yaml",
+    output1: `--- live:redis-cluster-01
++++ manifest:redis-cluster.yaml
+@@ -14,3 +14,5 @@
+   macros:
+-    {$REDIS_MAX_MEMORY}: "8GB"
++    {$REDIS_MAX_MEMORY}: "16GB"
+   tags:
++    env: "production"
++    team: "data-infra"`,
+    thought2: "Drift verified: 1 macro updated and 2 tags added. Applying changes under 'readwrite-mine' safety mode...",
+    command2: "zbxctl apply -f manifests/redis-cluster.yaml --safety-level=readwrite-mine",
+    output2: `[OK] manifests/redis-cluster.yaml applied successfully:
+  - redis-cluster-01: 1 macro updated, 2 tags added (hostid: 10842)
+  - redis-cluster-02: 1 macro updated, 2 tags added (hostid: 10843)
+Summary: 2 resources synced, 0 errors.`,
+    agentResponse: "Declarative synchronization complete: 2 Redis hosts updated with new 16GB memory threshold macros and production metadata tags. No unexpected resource drift detected.",
+    tokenSavings: "Unified diff format: 112 tokens vs full JSON schema: 1,320 tokens (92% LLM token reduction)"
+  },
+  safety: {
+    id: "safety",
+    title: "Client-Side Safety Intercept (Guardrail Protection)",
+    badge: "Skill: zabbix-safety",
+    userPrompt: "Clean up and delete all unused staging host groups in our Zabbix instance.",
+    thought1: "Executing host group deletion in current context 'prod' (safety-level: readonly)...",
+    command1: "zbxctl delete hostgroup --all-unused",
+    output1: `[EXIT CODE 2 - SAFETY_LEVEL_VIOLATION]
+{
+  "error": {
+    "code": "SAFETY_LEVEL_VIOLATION",
+    "method": "hostgroup.delete",
+    "level": "readonly",
+    "message": "Destructive bulk operation blocked client-side by zbxctl safety middleware.",
+    "resolution": "To execute destructive mutations, switch context or use '--safety-level=readwrite-all --force'."
+  }
+}`,
+    thought2: "The client-side safety guardrail intercepted this destructive action before any network packet was sent to the Zabbix API.",
+    command2: "zbxctl config get-contexts",
+    output2: `CURRENT   NAME       URL                              SAFETY_LEVEL   FORMAT
+*         prod       https://zabbix.prod.company.io   readonly       json
+          staging    https://zabbix.stg.company.io    readwrite-all  json`,
+    agentResponse: "Safety Guardrail Engaged: zbxctl blocked the delete request locally because the active context 'prod' is in 'readonly' mode.\n\nTo proceed safely, switch to the staging context (zbxctl config use-context staging) or confirm with explicit administrative privileges.",
+    tokenSavings: "Deterministic Exit Code 2 & Error Envelope: Prevents accidental destructive API calls"
+  }
 };
 
 let activeCategory = 'all';
@@ -217,122 +285,426 @@ document.addEventListener('DOMContentLoaded', () => {
   const yearEl = document.getElementById('current-year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
+  initNavigation();
+  initTablistKeyboardNavigation();
   renderCommands();
-  selectSafety('readonly', document.querySelector('.safety-option[data-level="readonly"]'));
-  setFormat('json', document.querySelector('.format-tab'));
+  selectSafety('readonly', document.getElementById('tab-readonly'));
+  setFormat('json', document.getElementById('fmt-json'));
+  selectScenario('incident', document.getElementById('tab-sim-incident'));
   fetchLatestRelease();
 });
 
+/* ==========================================================================
+   Mobile Navigation Menu Management
+   ========================================================================== */
+
+function initNavigation() {
+  const navToggle = document.getElementById('nav-toggle');
+  const navMenu = document.getElementById('nav-menu');
+  const navLinks = document.querySelectorAll('.nav-link, .nav-mobile-btn');
+
+  if (!navToggle || !navMenu) return;
+
+  function toggleMenu(open) {
+    const shouldOpen = open !== undefined ? open : !navMenu.classList.contains('nav-open');
+    navToggle.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+    if (shouldOpen) {
+      navMenu.classList.add('nav-open');
+    } else {
+      navMenu.classList.remove('nav-open');
+    }
+  }
+
+  navToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleMenu();
+  });
+
+  // Close menu when clicking on any nav link
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      toggleMenu(false);
+    });
+  });
+
+  // Close menu when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!navMenu.contains(e.target) && !navToggle.contains(e.target)) {
+      toggleMenu(false);
+    }
+  });
+
+  // Close menu on Escape key press (WCAG 2.1.2)
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && navMenu.classList.contains('nav-open')) {
+      toggleMenu(false);
+      navToggle.focus();
+    }
+  });
+
+  // Reset menu on resize to desktop width
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 1024 && navMenu.classList.contains('nav-open')) {
+      toggleMenu(false);
+    }
+  });
+}
+
+/* ==========================================================================
+   Screen Reader Live Announcements (WCAG 4.1.3)
+   ========================================================================== */
+
+function announceToScreenReader(message) {
+  const announcer = document.getElementById('a11y-announcer');
+  if (announcer) {
+    announcer.textContent = '';
+    setTimeout(() => {
+      announcer.textContent = message;
+    }, 50);
+  }
+}
+
+/* ==========================================================================
+   Interactive Command Playground
+   ========================================================================== */
+
 function renderCommands() {
- const container = document.getElementById('command-list');
- const searchVal = document.getElementById('command-search').value.toLowerCase();
+  const container = document.getElementById('command-list');
+  const searchInput = document.getElementById('command-search');
+  const searchStatus = document.getElementById('search-status');
+  if (!container || !searchInput) return;
 
- const filtered = commandsData.filter(cmd => {
- const matchesCat = activeCategory === 'all' || cmd.category === activeCategory;
- const matchesSearch = cmd.name.toLowerCase().includes(searchVal) || cmd.desc.toLowerCase().includes(searchVal);
- return matchesCat && matchesSearch;
- });
+  const searchVal = searchInput.value.trim().toLowerCase();
 
- if (filtered.length === 0) {
- container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-dim); padding: 2rem;">No matching commands found.</div>`;
- return;
- }
+  const filtered = commandsData.filter(cmd => {
+    const matchesCat = activeCategory === 'all' || cmd.category === activeCategory;
+    const matchesSearch = cmd.name.toLowerCase().includes(searchVal) || cmd.desc.toLowerCase().includes(searchVal);
+    return matchesCat && matchesSearch;
+  });
 
- container.innerHTML = filtered.map(cmd => `
- <div class="cmd-item">
- <div>
- <div class="cmd-item-header">
- <span class="cmd-name">${cmd.name}</span>
- <span class="cmd-tag">${cmd.category.toUpperCase()}</span>
- </div>
- <p class="cmd-desc">${cmd.desc}</p>
- </div>
- <div class="cmd-example">
- <code>${cmd.example}</code>
- <button class="copy-btn" onclick="copyText('${cmd.example}', this)">Copy</button>
- </div>
- </div>
- `).join('');
+  if (searchStatus) {
+    if (searchVal || activeCategory !== 'all') {
+      searchStatus.textContent = `Showing ${filtered.length} matching commands`;
+    } else {
+      searchStatus.textContent = '';
+    }
+  }
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-dim); padding: 2rem;">No matching commands found.</div>`;
+    return;
+  }
+
+  container.innerHTML = filtered.map((cmd, idx) => `
+    <div class="cmd-item">
+      <div>
+        <div class="cmd-item-header">
+          <span class="cmd-name">${escapeHtml(cmd.name)}</span>
+          <span class="cmd-tag">${escapeHtml(cmd.category.toUpperCase())}</span>
+        </div>
+        <p class="cmd-desc">${escapeHtml(cmd.desc)}</p>
+      </div>
+      <div class="cmd-example">
+        <code id="cmd-sample-${idx}">${escapeHtml(cmd.example)}</code>
+        <button type="button" class="copy-btn" aria-label="Copy ${escapeHtml(cmd.name)} command" onclick="copyElementText('cmd-sample-${idx}', this)">Copy</button>
+      </div>
+    </div>
+  `).join('');
 }
 
 function filterCommands() {
- renderCommands();
+  renderCommands();
 }
 
 function setCategory(cat, btn) {
- activeCategory = cat;
- document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
- btn.classList.add('active');
- renderCommands();
+  activeCategory = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => {
+    b.classList.remove('active');
+    b.setAttribute('aria-selected', 'false');
+  });
+  if (btn) {
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected', 'true');
+  }
+  renderCommands();
 }
+
+/* ==========================================================================
+   Safety Level Selector
+   ========================================================================== */
 
 function selectSafety(level, element) {
- document.querySelectorAll('.safety-option').forEach(el => el.classList.remove('active'));
- if (element) element.classList.add('active');
+  document.querySelectorAll('.safety-option').forEach(el => {
+    el.classList.remove('active');
+    el.setAttribute('aria-selected', 'false');
+  });
+  if (element) {
+    element.classList.add('active');
+    element.setAttribute('aria-selected', 'true');
+  }
 
- const data = safetyMatrixData[level];
- const container = document.getElementById('safety-details');
+  // Sync tabpanel aria-labelledby with the active tab (WAI-ARIA best practice)
+  const panel = document.getElementById('safety-details');
+  if (panel && element) {
+    panel.setAttribute('aria-labelledby', element.id);
+  }
 
- container.innerHTML = `
- <div style="margin-bottom: 1.5rem;">
- <h3 style="font-family: var(--font-heading); font-size: 1.4rem; color: #0F172A; margin-bottom: 0.25rem;">
- Safety Level: <span style="color: var(--zabbix-blue);">${data.title}</span>
- </h3>
- <p style="color: var(--text-muted); font-size: 0.95rem;">${data.subtitle}</p>
- </div>
+  const data = safetyMatrixData[level];
+  const container = document.getElementById('safety-details');
+  if (!data || !container) return;
 
- <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
- <div style="background: #ECFDF5; border: 1px solid #A7F3D0; padding: 1rem; border-radius: 8px;">
- <h4 style="color: #065F46; font-size: 0.9rem; margin-bottom: 0.5rem;">Permitted Operations</h4>
- <ul style="padding-left: 1.2rem; color: #1F2937; font-size: 0.88rem;">
- ${data.allowed.map(item => `<li><code>${item}</code></li>`).join('')}
- </ul>
- </div>
- <div style="background: #FEF2F2; border: 1px solid #FECACA; padding: 1rem; border-radius: 8px;">
- <h4 style="color: #991B1B; font-size: 0.9rem; margin-bottom: 0.5rem;">Blocked Operations</h4>
- <ul style="padding-left: 1.2rem; color: #1F2937; font-size: 0.88rem;">
- ${data.blocked.map(item => `<li><code>${item}</code></li>`).join('')}
- </ul>
- </div>
- </div>
+  container.innerHTML = `
+    <div style="margin-bottom: 1.5rem;">
+      <h3 style="font-family: var(--font-heading); font-size: 1.35rem; color: var(--zabbix-navy); margin-bottom: 0.25rem;">
+        Safety Level: <span style="color: var(--zabbix-blue);">${escapeHtml(data.title)}</span>
+      </h3>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">${escapeHtml(data.subtitle)}</p>
+    </div>
 
- <div>
- <h4 style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 0.5rem;">Sample Exit Code 2 Violation Envelope</h4>
- <pre style="background: #1E222D; border: 1px solid #374151; padding: 1rem; border-radius: 8px; font-family: var(--font-mono); font-size: 0.82rem; color: #F87171;"><code>${data.sampleError}</code></pre>
- </div>
- `;
+    <div class="safety-columns">
+      <div style="background: #ECFDF5; border: 1px solid #A7F3D0; padding: 1.15rem; border-radius: 8px;">
+        <h4 style="color: #065F46; font-size: 0.92rem; margin-bottom: 0.5rem; font-weight: 700;">Permitted Operations</h4>
+        <ul style="padding-left: 1.2rem; color: #1F2937; font-size: 0.88rem; line-height: 1.6;">
+          ${data.allowed.map(item => `<li><code>${escapeHtml(item)}</code></li>`).join('')}
+        </ul>
+      </div>
+      <div style="background: #FEF2F2; border: 1px solid #FECACA; padding: 1.15rem; border-radius: 8px;">
+        <h4 style="color: #991B1B; font-size: 0.92rem; margin-bottom: 0.5rem; font-weight: 700;">Blocked Operations</h4>
+        <ul style="padding-left: 1.2rem; color: #1F2937; font-size: 0.88rem; line-height: 1.6;">
+          ${data.blocked.map(item => `<li><code>${escapeHtml(item)}</code></li>`).join('')}
+        </ul>
+      </div>
+    </div>
+
+    <div>
+      <h4 style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 0.5rem; font-weight: 600;">Sample Exit Code 2 Violation Envelope</h4>
+      <pre tabindex="0" aria-label="Violation error envelope" style="background: #1E222D; border: 1px solid #374151; padding: 1rem; border-radius: 8px; font-family: var(--font-mono); font-size: 0.82rem; color: #F87171; overflow-x: auto;"><code>${escapeHtml(data.sampleError)}</code></pre>
+    </div>
+  `;
 }
+
+/* ==========================================================================
+   Output Format Tabs
+   ========================================================================== */
 
 function setFormat(fmt, btn) {
- document.querySelectorAll('.format-tab').forEach(b => b.classList.remove('active'));
- if (btn) btn.classList.add('active');
+  document.querySelectorAll('.format-tab').forEach(b => {
+    b.classList.remove('active');
+    b.setAttribute('aria-selected', 'false');
+  });
+  if (btn) {
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected', 'true');
+  }
 
- const preview = document.getElementById('format-preview');
- preview.textContent = formatPreviews[fmt] || formatPreviews.json;
+  // Sync tabpanel aria-labelledby with the active tab (WAI-ARIA best practice)
+  const formatPanel = document.getElementById('format-preview-panel');
+  if (formatPanel && btn) {
+    formatPanel.setAttribute('aria-labelledby', btn.id);
+  }
+
+  const preview = document.getElementById('format-preview');
+  if (preview) {
+    preview.innerHTML = `<code>${escapeHtml(formatPreviews[fmt] || formatPreviews.json)}</code>`;
+  }
 }
 
+/* ==========================================================================
+   AI Agent Simulation Scenario Switcher
+   ========================================================================== */
+
+function selectScenario(scenarioKey, btn) {
+  document.querySelectorAll('.sim-tab').forEach(b => {
+    b.classList.remove('active');
+    b.setAttribute('aria-selected', 'false');
+  });
+  if (btn) {
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected', 'true');
+  }
+
+  const simPanel = document.getElementById('agent-sim-panel');
+  if (simPanel && btn) {
+    simPanel.setAttribute('aria-labelledby', btn.id);
+  }
+
+  const data = agentScenariosData[scenarioKey] || agentScenariosData.incident;
+  const container = document.getElementById('agent-chat-body');
+  const tokenBadge = document.getElementById('sim-token-savings');
+
+  if (tokenBadge) {
+    tokenBadge.innerHTML = `⚡ ${escapeHtml(data.tokenSavings)}`;
+  }
+
+  if (container) {
+    container.innerHTML = `
+      <!-- User Turn -->
+      <div class="chat-row">
+        <div class="chat-avatar avatar-user" aria-hidden="true">👤</div>
+        <div class="chat-content">
+          <div class="chat-author">Developer / SRE</div>
+          <div class="chat-bubble-user">${escapeHtml(data.userPrompt)}</div>
+        </div>
+      </div>
+
+      <!-- Agent Turn -->
+      <div class="chat-row">
+        <div class="chat-avatar avatar-agent" aria-hidden="true">🤖</div>
+        <div class="chat-content">
+          <div class="chat-author">AI Coding Assistant (Antigravity / Claude Code / Cursor) <span class="skill-badge" style="margin-left: 0.5rem;">${escapeHtml(data.badge)}</span></div>
+          
+          <div class="chat-thought-box">
+            <strong>Thought:</strong> ${escapeHtml(data.thought1)}
+          </div>
+
+          <!-- Tool Call 1 -->
+          <div class="chat-cli-block">
+            <div class="chat-cli-header">
+              <span>TOOL CALL &bull; SHELL / BASH</span>
+              <button type="button" class="copy-btn" style="min-height: 28px; padding: 0.2rem 0.6rem; font-size: 0.75rem;" onclick="copyText('${escapeHtml(data.command1)}', this)">Copy</button>
+            </div>
+            <div class="chat-cli-body">
+              <div class="chat-cli-cmd">$ ${escapeHtml(data.command1)}</div>
+              <div class="chat-cli-output">${escapeHtml(data.output1)}</div>
+            </div>
+          </div>
+
+          ${data.thought2 ? `
+          <div class="chat-thought-box">
+            <strong>Thought:</strong> ${escapeHtml(data.thought2)}
+          </div>
+          ` : ''}
+
+          ${data.command2 ? `
+          <!-- Tool Call 2 -->
+          <div class="chat-cli-block">
+            <div class="chat-cli-header">
+              <span>TOOL CALL &bull; SHELL / BASH</span>
+              <button type="button" class="copy-btn" style="min-height: 28px; padding: 0.2rem 0.6rem; font-size: 0.75rem;" onclick="copyText('${escapeHtml(data.command2)}', this)">Copy</button>
+            </div>
+            <div class="chat-cli-body">
+              <div class="chat-cli-cmd">$ ${escapeHtml(data.command2)}</div>
+              <div class="chat-cli-output">${escapeHtml(data.output2)}</div>
+            </div>
+          </div>
+          ` : ''}
+
+          <div class="chat-bubble-agent">${escapeHtml(data.agentResponse)}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  announceToScreenReader(`Switched to scenario: ${data.title}`);
+}
+
+/* ==========================================================================
+   Keyboard Tablist Navigation (WCAG 2.1.1)
+   ========================================================================== */
+
+function initTablistKeyboardNavigation() {
+  const tablists = document.querySelectorAll('[role="tablist"]');
+  tablists.forEach(tablist => {
+    const tabs = Array.from(tablist.querySelectorAll('[role="tab"]'));
+    tablist.addEventListener('keydown', (e) => {
+      const activeElement = document.activeElement;
+      const currentIndex = tabs.indexOf(activeElement);
+      if (currentIndex === -1) return;
+
+      let nextIndex = -1;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        nextIndex = (currentIndex + 1) % tabs.length;
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        nextIndex = 0;
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        nextIndex = tabs.length - 1;
+      }
+
+      if (nextIndex !== -1) {
+        tabs[nextIndex].focus();
+        tabs[nextIndex].click();
+      }
+    });
+  });
+}
+
+/* ==========================================================================
+   Copy to Clipboard Functionality with Feedback
+   ========================================================================== */
+
 function copyText(text, btn) {
+  if (!navigator.clipboard) {
+    fallbackCopyText(text, btn);
+    return;
+  }
   navigator.clipboard.writeText(text).then(() => {
-    const originalText = btn.textContent;
-    btn.textContent = 'Copied!';
-    btn.style.background = 'var(--zabbix-blue)';
-    btn.style.color = '#FFF';
-    setTimeout(() => {
-      btn.textContent = originalText;
-      btn.style.background = '';
-      btn.style.color = '';
-    }, 1800);
+    showCopyFeedback(btn);
+  }).catch(() => {
+    fallbackCopyText(text, btn);
   });
 }
 
 function copyElementText(elementId, btn) {
   const el = document.getElementById(elementId);
   if (el) {
-    copyText(el.textContent, btn);
+    copyText(el.textContent.trim(), btn);
   }
 }
 
+function fallbackCopyText(text, btn) {
+  const textArea = document.createElement('textarea');
+  textArea.value = text;
+  textArea.style.position = 'fixed';
+  textArea.style.opacity = '0';
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+  try {
+    document.execCommand('copy');
+    showCopyFeedback(btn);
+  } catch (err) {
+    console.error('Fallback copy failed:', err);
+  }
+  document.body.removeChild(textArea);
+}
+
+function showCopyFeedback(btn) {
+  if (!btn) return;
+  const originalText = btn.textContent;
+  btn.textContent = 'Copied!';
+  btn.style.background = 'var(--zabbix-blue)';
+  btn.style.color = '#FFFFFF';
+  announceToScreenReader('Copied to clipboard');
+
+  setTimeout(() => {
+    btn.textContent = originalText;
+    btn.style.background = '';
+    btn.style.color = '';
+  }, 1800);
+}
+
+function escapeHtml(str) {
+  if (typeof str !== 'string') return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+/* ==========================================================================
+   GitHub Release Fetching
+   ========================================================================== */
+
 async function fetchLatestRelease() {
+  if (typeof fetch !== 'function') return;
   try {
     const res = await fetch('https://api.github.com/repos/ErKatta/zbxctl/releases/latest');
     if (!res.ok) return;
