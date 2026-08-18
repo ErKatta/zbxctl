@@ -223,35 +223,30 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <th scope="row"><strong>Context Token Cost</strong></th>
-                                    <td>High (JSON schema definitions &amp; RPC envelopes)</td>
-                                    <td><span class="highlight-accent">Token-Optimized</span> (minimal JSON/TOON output via
-                                        stdout)</td>
+                                <tr class="comparison-row">
+                                    <th scope="row" class="comp-dimension">Context Token Cost</th>
+                                    <td class="comp-val comp-val-alt" data-label="Standard MCP Server Approach">High (JSON schema definitions &amp; RPC envelopes)</td>
+                                    <td class="comp-val comp-val-zbxctl" data-label="zbxctl Native CLI Approach"><span class="highlight-accent">Token-Optimized</span> (minimal JSON/TOON output via stdout)</td>
                                 </tr>
-                                <tr>
-                                    <th scope="row"><strong>Agent &amp; Tooling Support</strong></th>
-                                    <td>Requires dedicated MCP client integration</td>
-                                    <td><span class="highlight-accent">Universal</span> (works with any shell-enabled AI
-                                        assistant &amp; CI script)</td>
+                                <tr class="comparison-row">
+                                    <th scope="row" class="comp-dimension">Agent &amp; Tooling Support</th>
+                                    <td class="comp-val comp-val-alt" data-label="Standard MCP Server Approach">Requires dedicated MCP client integration</td>
+                                    <td class="comp-val comp-val-zbxctl" data-label="zbxctl Native CLI Approach"><span class="highlight-accent">Universal</span> (works with any shell-enabled AI assistant &amp; CI script)</td>
                                 </tr>
-                                <tr>
-                                    <th scope="row"><strong>Developer Workflow Speed</strong></th>
-                                    <td>Slower multi-hop daemon RPC debugging</td>
-                                    <td><span class="highlight-accent">Instant</span> (direct command line testing &amp; Unix
-                                        pipes)</td>
+                                <tr class="comparison-row">
+                                    <th scope="row" class="comp-dimension">Developer Workflow Speed</th>
+                                    <td class="comp-val comp-val-alt" data-label="Standard MCP Server Approach">Slower multi-hop daemon RPC debugging</td>
+                                    <td class="comp-val comp-val-zbxctl" data-label="zbxctl Native CLI Approach"><span class="highlight-accent">Instant</span> (direct command line testing &amp; Unix pipes)</td>
                                 </tr>
-                                <tr>
-                                    <th scope="row"><strong>Deployment Complexity</strong></th>
-                                    <td>Background daemon lifecycle per environment</td>
-                                    <td><span class="highlight-accent">Zero Daemon</span> (single statically compiled Go
-                                        binary)</td>
+                                <tr class="comparison-row">
+                                    <th scope="row" class="comp-dimension">Deployment Complexity</th>
+                                    <td class="comp-val comp-val-alt" data-label="Standard MCP Server Approach">Background daemon lifecycle per environment</td>
+                                    <td class="comp-val comp-val-zbxctl" data-label="zbxctl Native CLI Approach"><span class="highlight-accent">Zero Daemon</span> (single statically compiled Go binary)</td>
                                 </tr>
-                                <tr>
-                                    <th scope="row"><strong>Safety Guardrails</strong></th>
-                                    <td>Varies by server implementation</td>
-                                    <td><span class="highlight-accent">Built-in client-side binary safety middleware</span>
-                                    </td>
+                                <tr class="comparison-row">
+                                    <th scope="row" class="comp-dimension">Safety Guardrails</th>
+                                    <td class="comp-val comp-val-alt" data-label="Standard MCP Server Approach">Varies by server implementation</td>
+                                    <td class="comp-val comp-val-zbxctl" data-label="zbxctl Native CLI Approach"><span class="highlight-accent">Built-in client-side binary safety middleware</span></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -274,17 +269,17 @@
                             <button type="button" id="tab-sim-incident" class="sim-tab active" role="tab"
                                 aria-selected="true" aria-controls="agent-sim-panel"
                                 onclick="selectScenario('incident', this)">
-                                🔍 Incident Triage &amp; Diagnosis
+                                🔍 <span class="tab-label-full">Incident Triage &amp; Diagnosis</span><span class="tab-label-short">Incident</span>
                             </button>
                             <button type="button" id="tab-sim-gitops" class="sim-tab" role="tab"
                                 aria-selected="false" aria-controls="agent-sim-panel"
                                 onclick="selectScenario('gitops', this)">
-                                📦 GitOps Spec Sync
+                                📦 <span class="tab-label-full">GitOps Spec Sync</span><span class="tab-label-short">GitOps</span>
                             </button>
                             <button type="button" id="tab-sim-safety" class="sim-tab" role="tab"
                                 aria-selected="false" aria-controls="agent-sim-panel"
                                 onclick="selectScenario('safety', this)">
-                                🛡️ Safety Guardrail Intercept
+                                🛡️ <span class="tab-label-full">Safety Guardrail</span><span class="tab-label-short">Safety</span>
                             </button>
                         </div>
                         <div id="sim-token-savings" class="sim-token-badge" aria-live="polite">
@@ -360,9 +355,13 @@
                         <button type="button" class="format-tab active" role="tab" id="fmt-json" aria-selected="true"
                             aria-controls="format-preview-panel" onclick="setFormat('json', this)">JSON</button>
                         <button type="button" class="format-tab" role="tab" id="fmt-table" aria-selected="false"
-                            aria-controls="format-preview-panel" onclick="setFormat('table', this)">Terminal Table</button>
+                            aria-controls="format-preview-panel" onclick="setFormat('table', this)">
+                            <span class="fmt-label-full">Terminal Table</span><span class="fmt-label-short">Table</span>
+                        </button>
                         <button type="button" class="format-tab" role="tab" id="fmt-toon" aria-selected="false"
-                            aria-controls="format-preview-panel" onclick="setFormat('toon', this)">TOON (LLM Prompt)</button>
+                            aria-controls="format-preview-panel" onclick="setFormat('toon', this)">
+                            <span class="fmt-label-full">TOON (LLM Prompt)</span><span class="fmt-label-short">TOON</span>
+                        </button>
                         <button type="button" class="format-tab" role="tab" id="fmt-yaml" aria-selected="false"
                             aria-controls="format-preview-panel" onclick="setFormat('yaml', this)">YAML</button>
                     </div>
@@ -493,34 +492,30 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <th scope="row"><strong>Primary Paradigm</strong></th>
-                                <td>Interactive REPL shell (<code>zabbix-cli&gt;</code>) &amp; admin shortcuts</td>
-                                <td>Cloud-native POSIX verbs (<code>get</code>, <code>describe</code>, <code>apply</code>,
-                                    <code>raw</code>)
-                                </td>
+                            <tr class="comparison-row">
+                                <th scope="row" class="comp-dimension">Primary Paradigm</th>
+                                <td class="comp-val comp-val-alt" data-label="zabbix-cli (Python / unioslo)">Interactive REPL shell (<code>zabbix-cli&gt;</code>) &amp; admin shortcuts</td>
+                                <td class="comp-val comp-val-zbxctl" data-label="zbxctl (Go / Declarative Engine)">Cloud-native POSIX verbs (<code>get</code>, <code>describe</code>, <code>apply</code>, <code>raw</code>)</td>
                             </tr>
-                            <tr>
-                                <th scope="row"><strong>Deployment</strong></th>
-                                <td>Python package (<code>pip install zabbix-cli</code>)</td>
-                                <td>Single cross-compiled Go static binary (Zero runtime dependencies)</td>
+                            <tr class="comparison-row">
+                                <th scope="row" class="comp-dimension">Deployment</th>
+                                <td class="comp-val comp-val-alt" data-label="zabbix-cli (Python / unioslo)">Python package (<code>pip install zabbix-cli</code>)</td>
+                                <td class="comp-val comp-val-zbxctl" data-label="zbxctl (Go / Declarative Engine)">Single cross-compiled Go static binary (Zero runtime dependencies)</td>
                             </tr>
-                            <tr>
-                                <th scope="row"><strong>Best Suited For</strong></th>
-                                <td>Interactive terminal administration &amp; sysadmin wizards</td>
-                                <td>CI/CD automation pipelines, GitOps spec sync, AI coding agents</td>
+                            <tr class="comparison-row">
+                                <th scope="row" class="comp-dimension">Best Suited For</th>
+                                <td class="comp-val comp-val-alt" data-label="zabbix-cli (Python / unioslo)">Interactive terminal administration &amp; sysadmin wizards</td>
+                                <td class="comp-val comp-val-zbxctl" data-label="zbxctl (Go / Declarative Engine)">CI/CD automation pipelines, GitOps spec sync, AI coding agents</td>
                             </tr>
-                            <tr>
-                                <th scope="row"><strong>Safety &amp; Contexts</strong></th>
-                                <td>User confirmation prompts &amp; profile configs</td>
-                                <td>Kubeconfig multi-context switching &amp; client safety guardrail levels</td>
+                            <tr class="comparison-row">
+                                <th scope="row" class="comp-dimension">Safety &amp; Contexts</th>
+                                <td class="comp-val comp-val-alt" data-label="zabbix-cli (Python / unioslo)">User confirmation prompts &amp; profile configs</td>
+                                <td class="comp-val comp-val-zbxctl" data-label="zbxctl (Go / Declarative Engine)">Kubeconfig multi-context switching &amp; client safety guardrail levels</td>
                             </tr>
-                            <tr>
-                                <th scope="row"><strong>Output Formats</strong></th>
-                                <td>Formatted plain text tables &amp; lists</td>
-                                <td><code>json</code>, <code>table</code>, <code>yaml</code>, and token-optimized
-                                    <code>toon</code> for LLMs
-                                </td>
+                            <tr class="comparison-row">
+                                <th scope="row" class="comp-dimension">Output Formats</th>
+                                <td class="comp-val comp-val-alt" data-label="zabbix-cli (Python / unioslo)">Formatted plain text tables &amp; lists</td>
+                                <td class="comp-val comp-val-zbxctl" data-label="zbxctl (Go / Declarative Engine)"><code>json</code>, <code>table</code>, <code>yaml</code>, and token-optimized <code>toon</code> for LLMs</td>
                             </tr>
                         </tbody>
                     </table>
@@ -724,7 +719,7 @@
                                 <div>
                                     <h3>macOS</h3>
                                     <div class="arch-badges">
-                                        <span class="arch-badge">Apple Silicon</span>
+                                        <span class="arch-badge">Apple</span>
                                         <span class="arch-badge">Intel</span>
                                     </div>
                                 </div>
@@ -756,6 +751,7 @@
                                     <h3>Windows</h3>
                                     <div class="arch-badges">
                                         <span class="arch-badge">x86_64</span>
+                                        <span class="arch-badge">ARM64</span>
                                     </div>
                                 </div>
                             </div>
@@ -876,6 +872,12 @@
     <!-- Screen Reader Live Announcer Region (WCAG 4.1.3) -->
     <div id="a11y-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
+    <!-- Floating Action Button: Back to Top -->
+    <button type="button" id="btn-back-to-top" class="fab-back-to-top" aria-label="Back to top" title="Back to top" onclick="scrollToTop()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m18 15-6-6-6 6"/>
+        </svg>
+    </button>
     <script src="app.js"></script>
 </body>
 

@@ -286,6 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   initNavigation();
+  initBackToTop();
   initTablistKeyboardNavigation();
   renderCommands();
   selectSafety('readonly', document.getElementById('tab-readonly'));
@@ -433,52 +434,59 @@ function setCategory(cat, btn) {
    Safety Level Selector
    ========================================================================== */
 
-function selectSafety(level, element) {
-  document.querySelectorAll('.safety-option').forEach(el => {
-    el.classList.remove('active');
-    el.setAttribute('aria-selected', 'false');
+function selectSafety(level, btn) {
+  document.querySelectorAll('.safety-option').forEach(b => {
+    b.classList.remove('active');
+    b.setAttribute('aria-selected', 'false');
   });
-  if (element) {
-    element.classList.add('active');
-    element.setAttribute('aria-selected', 'true');
+  if (btn) {
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected', 'true');
   }
 
   // Sync tabpanel aria-labelledby with the active tab (WAI-ARIA best practice)
   const panel = document.getElementById('safety-details');
-  if (panel && element) {
-    panel.setAttribute('aria-labelledby', element.id);
+  if (panel && btn) {
+    panel.setAttribute('aria-labelledby', btn.id);
   }
 
   const data = safetyMatrixData[level];
   const container = document.getElementById('safety-details');
   if (!data || !container) return;
 
+  const badgeClass = level === 'readonly' ? 'level-readonly' :
+                     level === 'readwrite-mine' ? 'level-mine' :
+                     level === 'readwrite-all' ? 'level-all' : 'level-danger';
+
   container.innerHTML = `
-    <div style="margin-bottom: 1.5rem;">
-      <h3 style="font-family: var(--font-heading); font-size: 1.35rem; color: var(--zabbix-navy); margin-bottom: 0.25rem;">
-        Safety Level: <span style="color: var(--zabbix-blue);">${escapeHtml(data.title)}</span>
-      </h3>
-      <p style="color: var(--text-muted); font-size: 0.95rem;">${escapeHtml(data.subtitle)}</p>
+    <div class="safety-details-header">
+      <div class="safety-level-title-row">
+        <span class="safety-badge ${badgeClass}">${escapeHtml(data.title)}</span>
+        <span class="safety-subtitle">${escapeHtml(data.subtitle)}</span>
+      </div>
     </div>
 
     <div class="safety-columns">
-      <div style="background: #ECFDF5; border: 1px solid #A7F3D0; padding: 1.15rem; border-radius: 8px;">
-        <h4 style="color: #065F46; font-size: 0.92rem; margin-bottom: 0.5rem; font-weight: 700;">Permitted Operations</h4>
-        <ul style="padding-left: 1.2rem; color: #1F2937; font-size: 0.88rem; line-height: 1.6;">
+      <div class="safety-box safety-box-allowed">
+        <h4 class="safety-box-title"><span class="safety-icon-check" aria-hidden="true">✓</span> Permitted Operations</h4>
+        <ul class="safety-ops-list">
           ${data.allowed.map(item => `<li><code>${escapeHtml(item)}</code></li>`).join('')}
         </ul>
       </div>
-      <div style="background: #FEF2F2; border: 1px solid #FECACA; padding: 1.15rem; border-radius: 8px;">
-        <h4 style="color: #991B1B; font-size: 0.92rem; margin-bottom: 0.5rem; font-weight: 700;">Blocked Operations</h4>
-        <ul style="padding-left: 1.2rem; color: #1F2937; font-size: 0.88rem; line-height: 1.6;">
+      <div class="safety-box safety-box-blocked">
+        <h4 class="safety-box-title"><span class="safety-icon-cross" aria-hidden="true">✕</span> Blocked Operations</h4>
+        <ul class="safety-ops-list">
           ${data.blocked.map(item => `<li><code>${escapeHtml(item)}</code></li>`).join('')}
         </ul>
       </div>
     </div>
 
-    <div>
-      <h4 style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 0.5rem; font-weight: 600;">Sample Exit Code 2 Violation Envelope</h4>
-      <pre tabindex="0" aria-label="Violation error envelope" style="background: #1E222D; border: 1px solid #374151; padding: 1rem; border-radius: 8px; font-family: var(--font-mono); font-size: 0.82rem; color: #F87171; overflow-x: auto;"><code>${escapeHtml(data.sampleError)}</code></pre>
+    <div class="safety-error-section">
+      <div class="safety-error-header">
+        <span>⚠️ EXIT CODE 2 &bull; SAFETY VIOLATION ENVELOPE</span>
+        <button type="button" class="copy-btn mini-copy-btn" aria-label="Copy error envelope" onclick="copyText('${escapeHtml(data.sampleError).replace(/'/g, "\\'")}', this)">Copy</button>
+      </div>
+      <pre tabindex="0" class="safety-error-pre" aria-label="Violation error envelope"><code>${escapeHtml(data.sampleError)}</code></pre>
     </div>
   `;
 }
@@ -539,57 +547,60 @@ function selectScenario(scenarioKey, btn) {
   if (container) {
     container.innerHTML = `
       <!-- User Turn -->
-      <div class="chat-row">
-        <div class="chat-avatar avatar-user" aria-hidden="true">👤</div>
-        <div class="chat-content">
-          <div class="chat-author">Developer / SRE</div>
-          <div class="chat-bubble-user">${escapeHtml(data.userPrompt)}</div>
+      <div class="chat-row user-turn">
+        <div class="chat-author-bar">
+          <span class="chat-avatar-badge avatar-user" aria-hidden="true">👤</span>
+          <span class="chat-author-name">Developer / SRE</span>
         </div>
+        <div class="chat-bubble-user">${escapeHtml(data.userPrompt)}</div>
       </div>
 
       <!-- Agent Turn -->
-      <div class="chat-row">
-        <div class="chat-avatar avatar-agent" aria-hidden="true">🤖</div>
-        <div class="chat-content">
-          <div class="chat-author">AI Coding Assistant (Antigravity / Claude Code / Cursor) <span class="skill-badge" style="margin-left: 0.5rem;">${escapeHtml(data.badge)}</span></div>
-          
-          <div class="chat-thought-box">
-            <strong>Thought:</strong> ${escapeHtml(data.thought1)}
-          </div>
+      <div class="chat-row agent-turn">
+        <div class="chat-author-bar">
+          <span class="chat-avatar-badge avatar-agent" aria-hidden="true">🤖</span>
+          <span class="chat-author-name">AI Coding Assistant</span>
+          <span class="skill-badge">${escapeHtml(data.badge)}</span>
+        </div>
 
-          <!-- Tool Call 1 -->
-          <div class="chat-cli-block">
-            <div class="chat-cli-header">
-              <span>TOOL CALL &bull; SHELL / BASH</span>
-              <button type="button" class="copy-btn" style="min-height: 28px; padding: 0.2rem 0.6rem; font-size: 0.75rem;" onclick="copyText('${escapeHtml(data.command1)}', this)">Copy</button>
-            </div>
-            <div class="chat-cli-body">
-              <div class="chat-cli-cmd">$ ${escapeHtml(data.command1)}</div>
-              <div class="chat-cli-output">${escapeHtml(data.output1)}</div>
-            </div>
-          </div>
+        <div class="chat-thought-box">
+          <strong>💭 Thought:</strong> ${escapeHtml(data.thought1)}
+        </div>
 
-          ${data.thought2 ? `
-          <div class="chat-thought-box">
-            <strong>Thought:</strong> ${escapeHtml(data.thought2)}
+        <!-- Tool Call 1 -->
+        <div class="chat-cli-block" role="region" aria-label="Shell tool execution 1">
+          <div class="chat-cli-header">
+            <span class="tool-call-label"><span class="tool-call-dot"></span> TOOL CALL &bull; SHELL / BASH</span>
+            <button type="button" class="copy-btn mini-copy-btn" aria-label="Copy tool command 1" onclick="copyText('${escapeHtml(data.command1)}', this)">Copy</button>
           </div>
-          ` : ''}
-
-          ${data.command2 ? `
-          <!-- Tool Call 2 -->
-          <div class="chat-cli-block">
-            <div class="chat-cli-header">
-              <span>TOOL CALL &bull; SHELL / BASH</span>
-              <button type="button" class="copy-btn" style="min-height: 28px; padding: 0.2rem 0.6rem; font-size: 0.75rem;" onclick="copyText('${escapeHtml(data.command2)}', this)">Copy</button>
-            </div>
-            <div class="chat-cli-body">
-              <div class="chat-cli-cmd">$ ${escapeHtml(data.command2)}</div>
-              <div class="chat-cli-output">${escapeHtml(data.output2)}</div>
-            </div>
+          <div class="chat-cli-body">
+            <div class="chat-cli-cmd"><span class="prompt">$</span> ${escapeHtml(data.command1)}</div>
+            <pre class="chat-cli-output"><code>${escapeHtml(data.output1)}</code></pre>
           </div>
-          ` : ''}
+        </div>
 
-          <div class="chat-bubble-agent">${escapeHtml(data.agentResponse)}</div>
+        ${data.thought2 ? `
+        <div class="chat-thought-box">
+          <strong>💭 Thought:</strong> ${escapeHtml(data.thought2)}
+        </div>
+        ` : ''}
+
+        ${data.command2 ? `
+        <!-- Tool Call 2 -->
+        <div class="chat-cli-block" role="region" aria-label="Shell tool execution 2">
+          <div class="chat-cli-header">
+            <span class="tool-call-label"><span class="tool-call-dot"></span> TOOL CALL &bull; SHELL / BASH</span>
+            <button type="button" class="copy-btn mini-copy-btn" aria-label="Copy tool command 2" onclick="copyText('${escapeHtml(data.command2)}', this)">Copy</button>
+          </div>
+          <div class="chat-cli-body">
+            <div class="chat-cli-cmd"><span class="prompt">$</span> ${escapeHtml(data.command2)}</div>
+            <pre class="chat-cli-output"><code>${escapeHtml(data.output2)}</code></pre>
+          </div>
+        </div>
+        ` : ''}
+
+        <div class="chat-bubble-agent">
+          <div class="agent-response-text">${escapeHtml(data.agentResponse).replace(/\n\n/g, '<br><br>')}</div>
         </div>
       </div>
     `;
@@ -749,4 +760,53 @@ async function fetchLatestRelease() {
   } catch (err) {
     console.debug('GitHub release fetch skipped or failed:', err);
   }
+}
+
+/* ==========================================================================
+   Floating Action Button (Back to Top)
+   ========================================================================== */
+
+function scrollToTop() {
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  window.scrollTo({
+    top: 0,
+    behavior: prefersReduced ? 'auto' : 'smooth'
+  });
+
+  const mainContent = document.getElementById('main-content');
+  if (mainContent) {
+    mainContent.focus({ preventScroll: true });
+  }
+}
+
+function initBackToTop() {
+  const backToTopBtn = document.getElementById('btn-back-to-top');
+  if (!backToTopBtn) return;
+
+  const updateVisibility = () => {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || window.scrollY || 0;
+    if (scrollTop > 200) {
+      backToTopBtn.classList.add('visible');
+    } else {
+      backToTopBtn.classList.remove('visible');
+    }
+  };
+
+  let ticking = false;
+  const onScroll = () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        updateVisibility();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('touchmove', onScroll, { passive: true });
+  document.addEventListener('scroll', onScroll, { passive: true });
+
+  // Initial check
+  updateVisibility();
 }
